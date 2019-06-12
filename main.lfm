@@ -1,0 +1,93 @@
+object frmMain: TfrmMain
+  Left = 248
+  Height = 441
+  Top = 119
+  Width = 730
+  Caption = 'frmMain'
+  ClientHeight = 441
+  ClientWidth = 730
+  OnCreate = FormCreate
+  LCLVersion = '1.9.0.0'
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 730
+    Caption = 'ToolBar1'
+    TabOrder = 0
+    object btnNew: TButton
+      Left = 1
+      Height = 22
+      Top = 2
+      Width = 75
+      Caption = 'New'
+      OnClick = btnNewClick
+      TabOrder = 0
+    end
+    object btnOpen: TButton
+      Left = 76
+      Height = 22
+      Top = 2
+      Width = 75
+      Caption = 'Open'
+      OnClick = btnOpenClick
+      TabOrder = 1
+    end
+    object btnSave: TButton
+      Left = 151
+      Height = 22
+      Top = 2
+      Width = 75
+      Caption = 'Save'
+      OnClick = btnSaveClick
+      TabOrder = 2
+    end
+    object btnAbout: TButton
+      Left = 226
+      Height = 22
+      Top = 2
+      Width = 75
+      Caption = 'About'
+      OnClick = btnAboutClick
+      TabOrder = 3
+    end
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 415
+    Top = 26
+    Width = 440
+    Align = alClient
+    TabOrder = 1
+  end
+  object Panel2: TPanel
+    Left = 440
+    Height = 415
+    Top = 26
+    Width = 290
+    Align = alRight
+    ClientHeight = 415
+    ClientWidth = 290
+    TabOrder = 2
+    object textOutput: TMemo
+      Left = 1
+      Height = 367
+      Top = 1
+      Width = 288
+      Align = alTop
+      Font.Name = 'Courier New'
+      Font.Pitch = fpFixed
+      Font.Quality = fqCleartype
+      ParentFont = False
+      TabOrder = 0
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    left = 255
+    top = 117
+  end
+  object SaveDialog1: TSaveDialog
+    left = 270
+    top = 194
+  end
+end
