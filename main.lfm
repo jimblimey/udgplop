@@ -90,4 +90,9 @@ object frmMain: TfrmMain
     left = 270
     top = 194
   end
+  object updateTimer: TTimer
+    OnTimer = updateTimerTimer
+    left = 253
+    top = 280
+  end
 end

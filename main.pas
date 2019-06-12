@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  StdCtrls;
+  StdCtrls, fphttpclient{$IFDEF MSWINDOWS}, Windows{$ENDIF};
 
 type
 
@@ -22,6 +22,7 @@ type
     textOutput: TMemo;
     Panel1: TPanel;
     Panel2: TPanel;
+    updateTimer: TTimer;
     ToolBar1: TToolBar;
     procedure btnAboutClick(Sender: TObject);
     procedure btnNewClick(Sender: TObject);
@@ -30,6 +31,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure ButtonMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure updateTimerTimer(Sender: TObject);
   private
     buttons: Array[0..7,0..7] of TShape;
     pixels: Array[0..7] of Byte;
@@ -41,6 +43,11 @@ type
   public
 
   end;
+
+const
+  APPNAME = 'UDG Plop';
+  APPVER = '0.1a';
+  CURRVER = 20190612;
 
 var
   frmMain: TfrmMain;
@@ -60,6 +67,17 @@ procedure SetBit(var aValue: Byte; const Bit: Byte; const Flag: Boolean);
 begin
   aValue := (aValue or (1 shl Bit)) xor (Integer(not Flag) shl Bit);
 end;
+
+{$IFDEF MSWINDOWS}
+function getWinVer: String;
+var
+  VerInfo: TOSVersioninfo;
+begin
+  VerInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfo);
+  GetVersionEx(VerInfo);
+  Result := 'Windows NT '+IntToStr(VerInfo.dwMajorVersion) + '.' + IntToStr(VerInfo.dwMinorVersion)
+end;
+{$ENDIF}
 
 { TfrmMain }
 
@@ -94,6 +112,7 @@ begin
   CurrentFile := 'Untitled';
   OpenDialog1.Filter := 'UDG Plop Files (*.udgp)|*.udgp';
   SaveDialog1.Filter := 'UDG Plop Files (*.udgp)|*.udgp';
+  frmMain.Caption := APPNAME + ' [' + CurrentFile + ']';
 end;
 
 procedure TfrmMain.btnNewClick(Sender: TObject);
@@ -116,6 +135,7 @@ begin
     end;
   end;
   UpdateViewArea;
+  frmMain.Caption := APPNAME + ' [' + CurrentFile + ']';
 end;
 
 procedure TfrmMain.btnAboutClick(Sender: TObject);
@@ -155,6 +175,8 @@ begin
     fi.Free;
     UpdateViewArea;
     SetButtons;
+    CurrentFile := OpenDialog1.FileName;
+    frmMain.Caption := APPNAME + ' [' + CurrentFile + ']';
   end;
 end;
 
@@ -174,6 +196,8 @@ begin
   if not outfile.EndsWith('.udgp') then outfile := outfile + '.udgp';
   textOutput.Lines.SaveToFile(outfile);
   IsSaved := true;
+  if outfile <> CurrentFile then CurrentFile := outfile;
+  frmMain.Caption := APPNAME + ' [' + CurrentFile + ']';
 end;
 
 procedure TfrmMain.ButtonMouseDown(Sender: TObject; Button: TMouseButton;
@@ -201,6 +225,35 @@ begin
     UpdateViewArea;
     IsSaved := false;
   end;
+end;
+
+procedure TfrmMain.updateTimerTimer(Sender: TObject);
+var
+  HTTP: TFPHttpClient;
+  OS: String;
+  response: String;
+begin
+  updateTimer.Enabled := false;
+  {$ifdef Windows}
+  OS := getWinVer;
+  {$endif}
+  {$ifdef Linux}
+  OS := 'Linux';
+  {$endif}
+  {$ifdef FreeBSD}
+  OS := 'FreeBSD';
+  {$endif}
+  {$ifdef Darwin}
+  OS := 'OS X';
+  {$endif}
+  HTTP := TFPHttpClient.Create(nil);
+  HTTP.RequestHeaders.Add('User-Agent: Mozilla/5.0 (compatible; '+OS+'; '+APPNAME+' '+APPVER+' ('+IntToStr(CURRVER)+'))');
+  response := HTTP.Get('http://www.matthewhipkin.co.uk/udgplop.txt');
+  if StrToIntDef(trim(response),-1) > CURRVER then
+  begin
+
+  end;
+  HTTP.Free;
 end;
 
 procedure TfrmMain.GetButtonPosition(const button: TShape; var x: Integer; var y: Integer);
