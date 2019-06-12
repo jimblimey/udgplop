@@ -102,9 +102,8 @@ var
 begin
   if not IsSaved then
   begin
-     i := messagedlg('This file is unsaved,'+#13#10+'would you like to save it?', mtWarning, mbOKCancel, 0);
-     if i = mrOK then btnSaveClick(Sender)
-     else exit;
+     i := messagedlg('This file is unsaved,'+#13#10+'would you like to save it?', mtWarning, mbYesNo, 0);
+     if i = mrYes then btnSaveClick(Sender);
   end;
   CurrentFile := 'Untitled';
   IsSaved := true;
@@ -132,8 +131,8 @@ var
 begin
   if not IsSaved then
   begin
-    i := messagedlg('This file is unsaved,'+#13#10+'would you like to save it?', mtWarning, mbOKCancel, 0);
-    if i = mrOK then btnSaveClick(Sender)
+    i := messagedlg('This file is unsaved,'+#13#10+'would you like to save it?', mtWarning, mbYesNo, 0);
+    if i = mrYes then btnSaveClick(Sender)
     else exit;
   end;
   if OpenDialog1.Execute then
