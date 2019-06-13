@@ -7,7 +7,7 @@ object frmMain: TfrmMain
   ClientHeight = 441
   ClientWidth = 730
   OnCreate = FormCreate
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -75,9 +75,12 @@ object frmMain: TfrmMain
       Top = 1
       Width = 288
       Align = alTop
+      Font.CharSet = ANSI_CHARSET
+      Font.Color = clBlack
+      Font.Height = -15
       Font.Name = 'Courier New'
       Font.Pitch = fpFixed
-      Font.Quality = fqCleartype
+      Font.Quality = fqDraft
       ParentFont = False
       TabOrder = 0
     end

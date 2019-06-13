@@ -47,7 +47,7 @@ type
 const
   APPNAME = 'UDG Plop';
   APPVER = '0.1a';
-  CURRVER = 20190612;
+  CURRVER = 20190613;
 
 var
   frmMain: TfrmMain;
@@ -152,8 +152,7 @@ begin
   if not IsSaved then
   begin
     i := messagedlg('This file is unsaved,'+#13#10+'would you like to save it?', mtWarning, mbYesNo, 0);
-    if i = mrYes then btnSaveClick(Sender)
-    else exit;
+    if i = mrYes then btnSaveClick(Sender);
   end;
   if OpenDialog1.Execute then
   begin
@@ -296,6 +295,14 @@ begin
   end;
   textOutput.Lines.Add('');
   textOutput.Lines.AddStrings(plines);
+  textOutput.Lines.Add('');
+  s := 'DATA ';
+  for i := 0 to 7 do
+  begin
+    s := s + IntToStr(pixels[i]);
+    if i < 7 then s := s + ', ';
+  end;
+  textOutput.Lines.Add(s);
   plines.Free;
 end;
 
