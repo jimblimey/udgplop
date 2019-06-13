@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  StdCtrls, fphttpclient{$IFDEF MSWINDOWS}, Windows{$ENDIF};
+  StdCtrls, LCLIntF, fphttpclient{$IFDEF MSWINDOWS}, Windows{$ENDIF};
 
 type
 
@@ -17,7 +17,9 @@ type
     btnOpen: TButton;
     btnSave: TButton;
     btnAbout: TButton;
+    updateLabel: TLabel;
     OpenDialog1: TOpenDialog;
+    updatePanel: TPanel;
     SaveDialog1: TSaveDialog;
     textOutput: TMemo;
     Panel1: TPanel;
@@ -28,9 +30,11 @@ type
     procedure btnNewClick(Sender: TObject);
     procedure btnOpenClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure ButtonMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure updateLabelClick(Sender: TObject);
     procedure updateTimerTimer(Sender: TObject);
   private
     buttons: Array[0..7,0..7] of TShape;
@@ -40,6 +44,7 @@ type
     procedure GetButtonPosition(const button: TShape; var x: Integer; var y: Integer);
     procedure UpdateViewArea;
     procedure SetButtons;
+    procedure UpdateWindowTitle;
   public
 
   end;
@@ -112,7 +117,7 @@ begin
   CurrentFile := 'Untitled';
   OpenDialog1.Filter := 'UDG Plop Files (*.udgp)|*.udgp';
   SaveDialog1.Filter := 'UDG Plop Files (*.udgp)|*.udgp';
-  frmMain.Caption := APPNAME + ' [' + CurrentFile + ']';
+  UpdateWindowTitle;
 end;
 
 procedure TfrmMain.btnNewClick(Sender: TObject);
@@ -135,7 +140,7 @@ begin
     end;
   end;
   UpdateViewArea;
-  frmMain.Caption := APPNAME + ' [' + CurrentFile + ']';
+  UpdateWindowTitle;
 end;
 
 procedure TfrmMain.btnAboutClick(Sender: TObject);
@@ -175,7 +180,8 @@ begin
     UpdateViewArea;
     SetButtons;
     CurrentFile := OpenDialog1.FileName;
-    frmMain.Caption := APPNAME + ' [' + CurrentFile + ']';
+    IsSaved := true;
+    UpdateWindowTitle;
   end;
 end;
 
@@ -196,7 +202,22 @@ begin
   textOutput.Lines.SaveToFile(outfile);
   IsSaved := true;
   if outfile <> CurrentFile then CurrentFile := outfile;
-  frmMain.Caption := APPNAME + ' [' + CurrentFile + ']';
+  UpdateWindowTitle;
+end;
+
+procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: boolean);
+var
+  i: Integer;
+begin
+  if not IsSaved then
+  begin
+    if not IsSaved then
+    begin
+      i := messagedlg('This file is unsaved,'+#13#10+'would you like to save it?', mtWarning, mbYesNo, 0);
+      if i = mrYes then btnSaveClick(Sender);
+    end;
+  end;
+  CanClose := true;
 end;
 
 procedure TfrmMain.ButtonMouseDown(Sender: TObject; Button: TMouseButton;
@@ -223,7 +244,14 @@ begin
     end;
     UpdateViewArea;
     IsSaved := false;
+    UpdateWindowTitle;
   end;
+end;
+
+procedure TfrmMain.updateLabelClick(Sender: TObject);
+begin
+  OpenURL('https://www.matthewhipkin.co.uk');
+  updatePanel.Visible := false;
 end;
 
 procedure TfrmMain.updateTimerTimer(Sender: TObject);
@@ -250,7 +278,7 @@ begin
   response := HTTP.Get('http://www.matthewhipkin.co.uk/udgplop.txt');
   if StrToIntDef(trim(response),-1) > CURRVER then
   begin
-
+    updatePanel.Visible := true;
   end;
   HTTP.Free;
 end;
@@ -318,6 +346,14 @@ begin
       else buttons[i,j].Brush.Color := clWhite;
     end;
   end;
+end;
+
+procedure TfrmMain.UpdateWindowTitle;
+begin
+  frmMain.Caption := APPNAME + ' [' + CurrentFile;
+  if not IsSaved then frmMain.Caption := frmMain.Caption + ' *';
+  frmMain.Caption := frmMain.Caption + ']';
+  Application.Title := frmMain.Caption;
 end;
 
 end.

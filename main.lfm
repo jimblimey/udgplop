@@ -1,12 +1,14 @@
 object frmMain: TfrmMain
   Left = 248
-  Height = 441
+  Height = 463
   Top = 119
   Width = 730
   Caption = 'frmMain'
-  ClientHeight = 441
+  ClientHeight = 463
   ClientWidth = 730
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  Position = poScreenCenter
   LCLVersion = '2.1.0.0'
   object ToolBar1: TToolBar
     Left = 0
@@ -54,7 +56,7 @@ object frmMain: TfrmMain
   end
   object Panel1: TPanel
     Left = 0
-    Height = 415
+    Height = 437
     Top = 26
     Width = 440
     Align = alClient
@@ -62,11 +64,11 @@ object frmMain: TfrmMain
   end
   object Panel2: TPanel
     Left = 440
-    Height = 415
+    Height = 437
     Top = 26
     Width = 290
     Align = alRight
-    ClientHeight = 415
+    ClientHeight = 437
     ClientWidth = 290
     TabOrder = 2
     object textOutput: TMemo
@@ -83,6 +85,33 @@ object frmMain: TfrmMain
       Font.Quality = fqDraft
       ParentFont = False
       TabOrder = 0
+    end
+    object updatePanel: TPanel
+      Left = 8
+      Height = 35
+      Top = 398
+      Width = 281
+      Anchors = [akRight, akBottom]
+      ClientHeight = 35
+      ClientWidth = 281
+      TabOrder = 1
+      Visible = False
+      object updateLabel: TLabel
+        Cursor = crHandPoint
+        Left = 1
+        Height = 33
+        Top = 1
+        Width = 279
+        Align = alClient
+        Alignment = taCenter
+        Caption = 'An update is a available, click here to download'
+        Font.Color = clRed
+        Font.Style = [fsUnderline]
+        Layout = tlCenter
+        ParentColor = False
+        ParentFont = False
+        OnClick = updateLabelClick
+      end
     end
   end
   object OpenDialog1: TOpenDialog
