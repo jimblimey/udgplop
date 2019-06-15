@@ -9,7 +9,7 @@ object frmMain: TfrmMain
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '1.9.0.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -52,6 +52,15 @@ object frmMain: TfrmMain
       Caption = 'About'
       OnClick = btnAboutClick
       TabOrder = 3
+    end
+    object btnImport: TButton
+      Left = 301
+      Height = 22
+      Top = 2
+      Width = 75
+      Caption = 'Import'
+      OnClick = btnImportClick
+      TabOrder = 4
     end
   end
   object Panel1: TPanel

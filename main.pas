@@ -17,6 +17,7 @@ type
     btnOpen: TButton;
     btnSave: TButton;
     btnAbout: TButton;
+    btnImport: TButton;
     updateLabel: TLabel;
     OpenDialog1: TOpenDialog;
     updatePanel: TPanel;
@@ -27,6 +28,7 @@ type
     updateTimer: TTimer;
     ToolBar1: TToolBar;
     procedure btnAboutClick(Sender: TObject);
+    procedure btnImportClick(Sender: TObject);
     procedure btnNewClick(Sender: TObject);
     procedure btnOpenClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
@@ -146,6 +148,33 @@ end;
 procedure TfrmMain.btnAboutClick(Sender: TObject);
 begin
   frmAbout.ShowModal;
+end;
+
+procedure TfrmMain.btnImportClick(Sender: TObject);
+var
+  s: String;
+  sparts: TStringArray;
+  i: Integer;
+begin
+  if not IsSaved then
+  begin
+    i := messagedlg('This file is unsaved,'+#13#10+'would you like to save it?', mtWarning, mbYesNo, 0);
+    if i = mrYes then btnSaveClick(Sender);
+  end;
+  s := InputBox('Import a sprite','Enter the pixels as 8 integer values seperated by commas','0,0,0,0,0,0,0,0');
+  sparts := s.Split(',');
+  if High(sparts) = 7 then
+  begin
+    for i := 0 to 7 do
+    begin
+      pixels[i] := StrToIntDef(trim(sparts[i]),0);
+    end;
+    UpdateViewArea;
+    SetButtons;
+    CurrentFile := 'Untitled';
+    IsSaved := false;
+    UpdateWindowTitle;
+  end;
 end;
 
 procedure TfrmMain.btnOpenClick(Sender: TObject);
