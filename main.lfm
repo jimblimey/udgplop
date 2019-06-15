@@ -45,7 +45,7 @@ object frmMain: TfrmMain
       TabOrder = 2
     end
     object btnAbout: TButton
-      Left = 226
+      Left = 301
       Height = 22
       Top = 2
       Width = 75
@@ -54,7 +54,7 @@ object frmMain: TfrmMain
       TabOrder = 3
     end
     object btnImport: TButton
-      Left = 301
+      Left = 226
       Height = 22
       Top = 2
       Width = 75
