@@ -174,7 +174,8 @@ begin
     CurrentFile := 'Untitled';
     IsSaved := false;
     UpdateWindowTitle;
-  end;
+  end
+  else showmessage('Import failed! Is the data in correct format?');
 end;
 
 procedure TfrmMain.btnOpenClick(Sender: TObject);
