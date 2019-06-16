@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  StdCtrls, LCLIntF, fphttpclient{$IFDEF MSWINDOWS}, Windows{$ENDIF};
+  StdCtrls, LCLIntF, StrUtils, fphttpclient{$IFDEF MSWINDOWS}, Windows{$ENDIF};
 
 type
 
@@ -40,21 +40,22 @@ type
     procedure updateTimerTimer(Sender: TObject);
   private
     buttons: Array[0..7,0..7] of TShape;
-    pixels: Array[0..7] of Byte;
+    pixels: Array[0..7,0..7] of Byte;
     IsSaved: Boolean;
     CurrentFile: String;
     procedure GetButtonPosition(const button: TShape; var x: Integer; var y: Integer);
     procedure UpdateViewArea;
     procedure SetButtons;
     procedure UpdateWindowTitle;
+    function GetLineValue(l: Integer): Byte;
   public
 
   end;
 
 const
   APPNAME = 'UDG Plop';
-  APPVER = '0.1a';
-  CURRVER = 20190613;
+  APPVER = '0.2';
+  CURRVER = 20190616;
 
 var
   frmMain: TfrmMain;
@@ -65,14 +66,37 @@ implementation
 
 uses about;
 
-function GetBit(const aValue: Byte; const Bit: Byte): Byte;
+// http://delphiexamples.com/mathematics/bin2dec.html
+function Pow(i, k: Integer): Integer;
+var
+  j, Count: Integer;
 begin
-  Result := (aValue shr Bit) and 1;
+  if k>0 then j:=2
+    else j:=1;
+  for Count:=1 to k-1 do
+    j:=j*2;
+  Result:=j;
 end;
 
-procedure SetBit(var aValue: Byte; const Bit: Byte; const Flag: Boolean);
+// http://delphiexamples.com/mathematics/bin2dec.html
+function BinToDec(Str: string): Integer;
+var
+  Len, Res, i: Integer;
+  Error: Boolean;
 begin
-  aValue := (aValue or (1 shl Bit)) xor (Integer(not Flag) shl Bit);
+  Error:=False;
+  Len:=Length(Str);
+  Res:=0;
+  for i:=1 to Len do
+    if (Str[i]='0')or(Str[i]='1') then
+      Res:=Res+Pow(2, Len-i)*StrToInt(Str[i])
+    else
+    begin
+      Error:=True;
+      Break;
+    end;
+  if Error=True then Result:=0
+    else Result:=Res;
 end;
 
 {$IFDEF MSWINDOWS}
@@ -111,9 +135,12 @@ begin
       inc(c);
     end;
   end;
-  for c := 0 to 7 do
+  for x := 0 to 7 do
   begin
-    pixels[c] := 0;
+    for y := 0 to 7 do
+    begin
+      pixels[x,y] := 0;
+    end;
   end;
   IsSaved := true;
   CurrentFile := 'Untitled';
@@ -135,9 +162,9 @@ begin
   IsSaved := true;
   for i := 0 to 7 do
   begin
-    pixels[i] := 0;
     for j := 0 to 7 do
     begin
+      pixels[i,j] := 0;
       buttons[i,j].Brush.Color := clWhite;
     end;
   end;
@@ -152,9 +179,9 @@ end;
 
 procedure TfrmMain.btnImportClick(Sender: TObject);
 var
-  s: String;
+  s,b: String;
   sparts: TStringArray;
-  i: Integer;
+  i,j: Integer;
 begin
   if not IsSaved then
   begin
@@ -167,7 +194,11 @@ begin
   begin
     for i := 0 to 7 do
     begin
-      pixels[i] := StrToIntDef(trim(sparts[i]),0);
+      b := IntToBin(StrToIntDef(sparts[i],0),8);
+      for j := 1 to 8 do
+      begin
+        pixels[i,j-1] := StrToInt(b[j]);
+      end;
     end;
     UpdateViewArea;
     SetButtons;
@@ -180,9 +211,10 @@ end;
 
 procedure TfrmMain.btnOpenClick(Sender: TObject);
 var
-  i: Integer;
+  i,j: Integer;
   fi: TStrings;
   parts: TStringArray;
+  b: String;
 begin
   if not IsSaved then
   begin
@@ -201,9 +233,19 @@ begin
         parts := fi[i].Split([' ']);
         if High(parts) = 1 then
         begin
-          if StrToIntDef(parts[1],-1) > -1 then pixels[i] := StrToInt(parts[1]);
+          b := IntToBin(StrToIntDef(parts[1],0),8);
+          for j := 1 to 8 do
+          begin
+            pixels[i,j-1] := StrToInt(b[j]);
+          end;
         end
-        else pixels[i] := 0;
+        else
+        begin
+          for j := 1 to 8 do
+          begin
+            pixels[i,j-1] := 0;
+          end;
+        end;
       end;
     end;
     fi.Free;
@@ -263,14 +305,13 @@ begin
     begin
       (Sender as TShape).Brush.Color := clBlack;
       GetButtonPosition(Sender as TShape,i,j);
-      textOutput.Lines.Add(IntToStr(i)+','+IntToStr(j));
-      if (i > -1) and (j > -1) then SetBit(pixels[i],j,true);
+      if (i > -1) and (j > -1) then pixels[i,j] := 1;
     end
     else
     begin
       (Sender as TShape).Brush.Color := clWhite;
       GetButtonPosition(Sender as TShape,i,j);
-      if (i > -1) and (j > -1) then SetBit(pixels[i],j,false);
+      if (i > -1) and (j > -1) then pixels[i,j] := 0;
     end;
     UpdateViewArea;
     IsSaved := false;
@@ -345,10 +386,10 @@ begin
     s := '';
     for j := 0 to 7 do
     begin
-      s := s + IntToStr(GetBit(pixels[i],j));
+      s := s + IntToStr(pixels[i,j]);
     end;
     plines.Add('POKE USR "A"+'+IntToStr(i)+', BIN ' + s);
-    s := s + ' ' + IntToStr(pixels[i]);
+    s := s + ' ' + IntToStr(GetLineValue(i));
     textOutput.Lines.Add(s);
   end;
   textOutput.Lines.Add('');
@@ -357,7 +398,7 @@ begin
   s := 'DATA ';
   for i := 0 to 7 do
   begin
-    s := s + IntToStr(pixels[i]);
+    s := s + IntToStr(GetLineValue(i));
     if i < 7 then s := s + ', ';
   end;
   textOutput.Lines.Add(s);
@@ -372,8 +413,8 @@ begin
   begin
     for j := 0 to 7 do
     begin
-      if GetBit(pixels[j],i) = 1 then buttons[i,j].Brush.Color := clBlack
-      else buttons[i,j].Brush.Color := clWhite;
+      if pixels[i,j] = 1 then buttons[j,i].Brush.Color := clBlack
+      else buttons[j,i].Brush.Color := clWhite;
     end;
   end;
 end;
@@ -384,6 +425,20 @@ begin
   if not IsSaved then frmMain.Caption := frmMain.Caption + ' *';
   frmMain.Caption := frmMain.Caption + ']';
   Application.Title := frmMain.Caption;
+end;
+
+function TfrmMain.GetLineValue(l: Integer): Byte;
+var
+  i: Integer;
+  s: String;
+begin
+  Result := 0;
+  s := '';
+  for i := 0 to 7 do
+  begin
+    s := s + IntToStr(pixels[l,i]);
+  end;
+  Result := BinToDec(s);
 end;
 
 end.
