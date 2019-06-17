@@ -158,6 +158,7 @@ object frmMain: TfrmMain
     end
     object menuFlip: TMenuItem
       Caption = 'Flip'
+      OnClick = menuFlipClick
     end
     object menuRotateC: TMenuItem
       Caption = 'Rotate Clockwise'

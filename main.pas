@@ -44,6 +44,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure ButtonMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure menuFlipClick(Sender: TObject);
     procedure menuInvertClick(Sender: TObject);
     procedure menuMirrorClick(Sender: TObject);
     procedure updateLabelClick(Sender: TObject);
@@ -336,6 +337,28 @@ begin
     IsSaved := false;
     UpdateWindowTitle;
   end;
+end;
+
+procedure TfrmMain.menuFlipClick(Sender: TObject);
+var
+  tmp: Array[0..7,0..7] of Byte;
+  x,y: Integer;
+  j: Integer;
+begin
+  tmp := pixels;
+  j := 7;
+  for x := 0 to 7 do
+  begin
+    for y := 0 to 7 do
+    begin
+      tmp[j,y] := pixels[x,y];
+    end;
+    dec(j);
+  end;
+  pixels := tmp;
+  UpdateViewArea;
+  SetButtons;
+  IsSaved := false;
 end;
 
 procedure TfrmMain.menuInvertClick(Sender: TObject);
