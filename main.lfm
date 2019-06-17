@@ -9,7 +9,7 @@ object frmMain: TfrmMain
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -45,7 +45,7 @@ object frmMain: TfrmMain
       TabOrder = 2
     end
     object btnAbout: TButton
-      Left = 301
+      Left = 376
       Height = 22
       Top = 2
       Width = 75
@@ -61,6 +61,15 @@ object frmMain: TfrmMain
       Caption = 'Import'
       OnClick = btnImportClick
       TabOrder = 4
+    end
+    object btnTransform: TButton
+      Left = 301
+      Height = 22
+      Top = 2
+      Width = 75
+      Caption = 'Transform...'
+      OnClick = btnTransformClick
+      TabOrder = 5
     end
   end
   object Panel1: TPanel
@@ -135,5 +144,25 @@ object frmMain: TfrmMain
     OnTimer = updateTimerTimer
     left = 253
     top = 280
+  end
+  object menuTransform: TPopupMenu
+    left = 91
+    top = 121
+    object menuInvert: TMenuItem
+      Caption = 'Invert'
+      OnClick = menuInvertClick
+    end
+    object menuMirror: TMenuItem
+      Caption = 'Mirror'
+    end
+    object menuFlip: TMenuItem
+      Caption = 'Flip'
+    end
+    object menuRotateC: TMenuItem
+      Caption = 'Rotate Clockwise'
+    end
+    object menuRotateA: TMenuItem
+      Caption = 'Rotate Anti-clockwise'
+    end
   end
 end

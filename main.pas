@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  StdCtrls, LCLIntF, StrUtils, fphttpclient{$IFDEF MSWINDOWS}, Windows{$ENDIF};
+  StdCtrls, LCLIntF, Menus, StrUtils, fphttpclient{$IFDEF WINDOWS}, Windows{$ENDIF};
 
 type
 
@@ -18,6 +18,13 @@ type
     btnSave: TButton;
     btnAbout: TButton;
     btnImport: TButton;
+    btnTransform: TButton;
+    menuInvert: TMenuItem;
+    menuFlip: TMenuItem;
+    menuRotateA: TMenuItem;
+    menuRotateC: TMenuItem;
+    menuMirror: TMenuItem;
+    menuTransform: TPopupMenu;
     updateLabel: TLabel;
     OpenDialog1: TOpenDialog;
     updatePanel: TPanel;
@@ -32,10 +39,12 @@ type
     procedure btnNewClick(Sender: TObject);
     procedure btnOpenClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
+    procedure btnTransformClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure ButtonMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure menuInvertClick(Sender: TObject);
     procedure updateLabelClick(Sender: TObject);
     procedure updateTimerTimer(Sender: TObject);
   private
@@ -277,6 +286,15 @@ begin
   UpdateWindowTitle;
 end;
 
+procedure TfrmMain.btnTransformClick(Sender: TObject);
+var
+  lowerLeft: TPoint;
+begin
+  lowerLeft := Classes.Point(btnTransform.Left,btnTransform.Top + btnTransform.Height);
+  lowerLeft := ClientToScreen(lowerLeft);
+  menuTransform.Popup(lowerLeft.X, lowerLeft.Y);
+end;
+
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 var
   i: Integer;
@@ -317,6 +335,23 @@ begin
     IsSaved := false;
     UpdateWindowTitle;
   end;
+end;
+
+procedure TfrmMain.menuInvertClick(Sender: TObject);
+var
+  x, y: Integer;
+begin
+  for x := 0 to 7 do
+  begin
+    for y := 0 to 7 do
+    begin
+      if pixels[x,y] = 1 then pixels[x,y] := 0
+      else pixels[x,y] := 1;
+    end;
+  end;
+  UpdateViewArea;
+  SetButtons;
+  IsSaved := false;
 end;
 
 procedure TfrmMain.updateLabelClick(Sender: TObject);
