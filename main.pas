@@ -45,6 +45,7 @@ type
     procedure ButtonMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure menuInvertClick(Sender: TObject);
+    procedure menuMirrorClick(Sender: TObject);
     procedure updateLabelClick(Sender: TObject);
     procedure updateTimerTimer(Sender: TObject);
   private
@@ -349,6 +350,28 @@ begin
       else pixels[x,y] := 1;
     end;
   end;
+  UpdateViewArea;
+  SetButtons;
+  IsSaved := false;
+end;
+
+procedure TfrmMain.menuMirrorClick(Sender: TObject);
+var
+  tmp: Array[0..7,0..7] of Byte;
+  x,y: Integer;
+  j: Integer;
+begin
+  tmp := pixels;
+  for x := 0 to 7 do
+  begin
+    j := 7;
+    for y := 0 to 7 do
+    begin
+      tmp[x,j] := pixels[x,y];
+      dec(j);
+    end;
+  end;
+  pixels := tmp;
   UpdateViewArea;
   SetButtons;
   IsSaved := false;

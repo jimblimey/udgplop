@@ -154,6 +154,7 @@ object frmMain: TfrmMain
     end
     object menuMirror: TMenuItem
       Caption = 'Mirror'
+      OnClick = menuMirrorClick
     end
     object menuFlip: TMenuItem
       Caption = 'Flip'
