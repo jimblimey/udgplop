@@ -9,7 +9,7 @@ object frmMain: TfrmMain
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.1.0.0'
+  LCLVersion = '1.9.0.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -162,9 +162,11 @@ object frmMain: TfrmMain
     end
     object menuRotateC: TMenuItem
       Caption = 'Rotate Clockwise'
+      OnClick = menuRotateCClick
     end
     object menuRotateA: TMenuItem
       Caption = 'Rotate Anti-clockwise'
+      OnClick = menuRotateAClick
     end
   end
 end

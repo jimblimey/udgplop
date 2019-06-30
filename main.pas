@@ -47,6 +47,8 @@ type
     procedure menuFlipClick(Sender: TObject);
     procedure menuInvertClick(Sender: TObject);
     procedure menuMirrorClick(Sender: TObject);
+    procedure menuRotateAClick(Sender: TObject);
+    procedure menuRotateCClick(Sender: TObject);
     procedure updateLabelClick(Sender: TObject);
     procedure updateTimerTimer(Sender: TObject);
   private
@@ -392,6 +394,47 @@ begin
     begin
       tmp[x,j] := pixels[x,y];
       dec(j);
+    end;
+  end;
+  pixels := tmp;
+  UpdateViewArea;
+  SetButtons;
+  IsSaved := false;
+end;
+
+procedure TfrmMain.menuRotateAClick(Sender: TObject);
+var
+  tmp: Array[0..7,0..7] of Byte;
+  x,y,t: Integer;
+begin
+  for x := 0 to 3 do
+  begin
+    for y := 0 to 7-x do
+    begin
+      t := pixels[x,y];
+      tmp[x,y] := pixels[y,7-x];
+      tmp[y,7-x] := pixels[7-x,7-y];
+      tmp[7-x,7-y] := pixels[7-y,x];
+      tmp[7-y,x] := t;
+    end;
+  end;
+  pixels := tmp;
+  UpdateViewArea;
+  SetButtons;
+  IsSaved := false;
+end;
+
+procedure TfrmMain.menuRotateCClick(Sender: TObject);
+var
+  tmp: Array[0..7,0..7] of Byte;
+  x,y: Integer;
+begin
+  tmp := pixels;
+  for x := 0 to 7 do
+  begin
+    for y := 0 to 7 do
+    begin
+      tmp[x,y] := pixels[7-y,x];
     end;
   end;
   pixels := tmp;
