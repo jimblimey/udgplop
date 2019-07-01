@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  StdCtrls, LCLIntF, Menus, StrUtils, fphttpclient{$IFDEF WINDOWS}, Windows{$ENDIF};
+  StdCtrls, LCLIntF, Menus, StrUtils, fphttpclient{$IFDEF WINDOWS}, Windows{$ENDIF}, LCLType;
 
 type
 
@@ -19,12 +19,15 @@ type
     btnAbout: TButton;
     btnImport: TButton;
     btnTransform: TButton;
+    btnPaper: TButton;
+    btnInk: TButton;
     menuInvert: TMenuItem;
     menuFlip: TMenuItem;
     menuRotateA: TMenuItem;
     menuRotateC: TMenuItem;
     menuMirror: TMenuItem;
     menuTransform: TPopupMenu;
+    colourPanel: TScrollBox;
     updateLabel: TLabel;
     OpenDialog1: TOpenDialog;
     updatePanel: TPanel;
@@ -36,8 +39,10 @@ type
     ToolBar1: TToolBar;
     procedure btnAboutClick(Sender: TObject);
     procedure btnImportClick(Sender: TObject);
+    procedure btnInkClick(Sender: TObject);
     procedure btnNewClick(Sender: TObject);
     procedure btnOpenClick(Sender: TObject);
+    procedure btnPaperClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
     procedure btnTransformClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
@@ -51,11 +56,19 @@ type
     procedure menuRotateCClick(Sender: TObject);
     procedure updateLabelClick(Sender: TObject);
     procedure updateTimerTimer(Sender: TObject);
+    procedure ColourButtonMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     buttons: Array[0..7,0..7] of TShape;
     pixels: Array[0..7,0..7] of Byte;
+    ColourButtons: Array[0..14] of TShape;
     IsSaved: Boolean;
     CurrentFile: String;
+    PaperSelect: Boolean;
+    InkSelect: Boolean;
+    Paper: TColor;
+    Ink: TColor;
+    ZXColours: Array[0..14] of TColor;
     procedure GetButtonPosition(const button: TShape; var x: Integer; var y: Integer);
     procedure UpdateViewArea;
     procedure SetButtons;
@@ -68,7 +81,7 @@ type
 const
   APPNAME = 'UDG Plop';
   APPVER = '0.2';
-  CURRVER = 20190616;
+  CURRVER = 20190701;
 
 var
   frmMain: TfrmMain;
@@ -123,6 +136,16 @@ begin
 end;
 {$ENDIF}
 
+function HexToTColor(sColor: string): TColor;
+var
+  r,g,b: Byte;
+begin
+  r := StrToInt( '$00'+Copy( sColor, 1, 2 ) );
+  g := StrToInt( '$00'+Copy( sColor, 3, 2 ) );
+  b := StrToInt( '$00'+Copy( sColor, 5, 2 ) );
+  Result := RGBToColor(r,g,b);
+end;
+
 { TfrmMain }
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -131,6 +154,27 @@ var
 const
   bsize = 50;
 begin
+  ZXColours[0] := HexToTColor('000000');
+  ZXColours[1] := HexToTColor('0000C0');
+  ZXColours[2] := HexToTColor('C00000');
+  ZXColours[3] := HexToTColor('C000C0');
+  ZXColours[4] := HexToTColor('00C000');
+  ZXColours[5] := HexToTColor('00C0C0');
+  ZXColours[6] := HexToTColor('C0C000');
+  ZXColours[7] := HexToTColor('C0C0C0');
+  ZXColours[8] := HexToTColor('0000FF');
+  ZXColours[9] := HexToTColor('FF0000');
+  ZXColours[10] := HexToTColor('FF00FF');
+  ZXColours[11] := HexToTColor('00FF00');
+  ZXColours[12] := HexToTColor('00FFFF');
+  ZXColours[13] := HexToTColor('FFFF00');
+  ZXColours[14] := HexToTColor('FFFFFF');
+
+  PaperSelect := false;
+  InkSelect := false;
+  Paper := clWhite;
+  Ink := clBlack;
+
   c := 0;
   for x := 0 to 7 do
   begin
@@ -143,8 +187,8 @@ begin
       buttons[x,y].Left := x * (bsize + 2);
       buttons[x,y].Top := y * (bsize + 2);
       buttons[x,y].OnMouseDown := @ButtonMouseDown;
-      buttons[x,y].Brush.Color := clWhite;
-      buttons[x,y].Pen.Color := clWhite;
+      buttons[x,y].Brush.Color := Paper;
+      buttons[x,y].Pen.Color := Paper;
       inc(c);
     end;
   end;
@@ -154,6 +198,17 @@ begin
     begin
       pixels[x,y] := 0;
     end;
+  end;
+  for c := 0 to 14 do
+  begin
+    ColourButtons[c] := TShape.Create(Self);
+    ColourButtons[c].Parent := colourPanel;
+    ColourButtons[c].Brush.Color := ZXColours[c];
+    ColourButtons[c].Width := colourPanel.ClientRect.Width-1;
+    ColourButtons[c].Top := c * 27;
+    ColourButtons[c].Left := 0;
+    ColourButtons[c].Height := 25;
+    ColourButtons[c].OnMouseDown := @ColourButtonMouseDown;
   end;
   IsSaved := true;
   CurrentFile := 'Untitled';
@@ -178,7 +233,7 @@ begin
     for j := 0 to 7 do
     begin
       pixels[i,j] := 0;
-      buttons[i,j].Brush.Color := clWhite;
+      buttons[i,j].Brush.Color := Paper;
     end;
   end;
   UpdateViewArea;
@@ -220,6 +275,15 @@ begin
     UpdateWindowTitle;
   end
   else showmessage('Import failed! Is the data in correct format?');
+end;
+
+procedure TfrmMain.btnInkClick(Sender: TObject);
+begin
+  PaperSelect := false;
+  InkSelect := true;
+  colourPanel.Left := btnPaper.Left;
+  colourPanel.Top := Panel1.Top;
+  colourPanel.Visible := not colourPanel.Visible;
 end;
 
 procedure TfrmMain.btnOpenClick(Sender: TObject);
@@ -268,6 +332,15 @@ begin
     IsSaved := true;
     UpdateWindowTitle;
   end;
+end;
+
+procedure TfrmMain.btnPaperClick(Sender: TObject);
+begin
+  PaperSelect := true;
+  InkSelect := false;
+  colourPanel.Left := btnPaper.Left;
+  colourPanel.Top := Panel1.Top;
+  colourPanel.Visible := not colourPanel.Visible;
 end;
 
 procedure TfrmMain.btnSaveClick(Sender: TObject);
@@ -323,15 +396,15 @@ begin
   if Button = mbLeft then
   begin
     cc := (Sender as TShape).Brush.Color;
-    if cc = clWhite then
+    if cc = Paper then
     begin
-      (Sender as TShape).Brush.Color := clBlack;
+      (Sender as TShape).Brush.Color := Ink;
       GetButtonPosition(Sender as TShape,i,j);
       if (i > -1) and (j > -1) then pixels[i,j] := 1;
     end
     else
     begin
-      (Sender as TShape).Brush.Color := clWhite;
+      (Sender as TShape).Brush.Color := Paper;
       GetButtonPosition(Sender as TShape,i,j);
       if (i > -1) and (j > -1) then pixels[i,j] := 0;
     end;
@@ -449,6 +522,18 @@ begin
   updatePanel.Visible := false;
 end;
 
+procedure TfrmMain.ColourButtonMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+  begin
+    if PaperSelect then Paper := (Sender as TShape).Brush.Color;
+    if InkSelect then Ink := (Sender as TShape).Brush.Color;
+  end;
+  colourPanel.Visible := false;
+  SetButtons;
+end;
+
 procedure TfrmMain.updateTimerTimer(Sender: TObject);
 var
   HTTP: TFPHttpClient;
@@ -537,8 +622,8 @@ begin
   begin
     for j := 0 to 7 do
     begin
-      if pixels[i,j] = 1 then buttons[j,i].Brush.Color := clBlack
-      else buttons[j,i].Brush.Color := clWhite;
+      if pixels[i,j] = 1 then buttons[j,i].Brush.Color := Ink
+      else buttons[j,i].Brush.Color := Paper;
     end;
   end;
 end;

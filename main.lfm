@@ -9,7 +9,7 @@ object frmMain: TfrmMain
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -45,7 +45,7 @@ object frmMain: TfrmMain
       TabOrder = 2
     end
     object btnAbout: TButton
-      Left = 376
+      Left = 526
       Height = 22
       Top = 2
       Width = 75
@@ -70,6 +70,24 @@ object frmMain: TfrmMain
       Caption = 'Transform...'
       OnClick = btnTransformClick
       TabOrder = 5
+    end
+    object btnPaper: TButton
+      Left = 376
+      Height = 22
+      Top = 2
+      Width = 75
+      Caption = 'Paper'
+      OnClick = btnPaperClick
+      TabOrder = 6
+    end
+    object btnInk: TButton
+      Left = 451
+      Height = 22
+      Top = 2
+      Width = 75
+      Caption = 'Ink'
+      OnClick = btnInkClick
+      TabOrder = 7
     end
   end
   object Panel1: TPanel
@@ -131,6 +149,17 @@ object frmMain: TfrmMain
         OnClick = updateLabelClick
       end
     end
+  end
+  object colourPanel: TScrollBox
+    Left = 98
+    Height = 184
+    Top = 168
+    Width = 150
+    HorzScrollBar.Page = 1
+    HorzScrollBar.Visible = False
+    VertScrollBar.Page = 1
+    TabOrder = 3
+    Visible = False
   end
   object OpenDialog1: TOpenDialog
     left = 255
