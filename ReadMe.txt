@@ -9,3 +9,14 @@ and Mac OSX.
 
 Please report bugs or feature requests on the sourceforge project page at
 https://sourceforge.net/p/udgplop or find me on twitter @hippy2094
+
+Changelog
+---------
+
+0.2	Fixed incorrect integer values
+	Added transformations:
+		invert
+		mirror
+		flip
+		rotate
+0.1a	First alpha release
