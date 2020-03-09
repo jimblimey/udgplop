@@ -23,11 +23,20 @@ type
     btnInk: TButton;
     menuInvert: TMenuItem;
     menuFlip: TMenuItem;
+    menuShiftRight: TMenuItem;
+    menuShiftLeft: TMenuItem;
+    menuShiftDown: TMenuItem;
+    menuShiftUp: TMenuItem;
+    menuMoveColRight: TMenuItem;
+    menuMoveColLeft: TMenuItem;
+    menuMoveRowUp: TMenuItem;
+    menuMoveRowDown: TMenuItem;
     menuRotateA: TMenuItem;
     menuRotateC: TMenuItem;
     menuMirror: TMenuItem;
     menuTransform: TPopupMenu;
     colourPanel: TScrollBox;
+    menuEdit: TPopupMenu;
     updateLabel: TLabel;
     OpenDialog1: TOpenDialog;
     updatePanel: TPanel;
@@ -54,6 +63,10 @@ type
     procedure menuMirrorClick(Sender: TObject);
     procedure menuRotateAClick(Sender: TObject);
     procedure menuRotateCClick(Sender: TObject);
+    procedure menuShiftDownClick(Sender: TObject);
+    procedure menuShiftLeftClick(Sender: TObject);
+    procedure menuShiftRightClick(Sender: TObject);
+    procedure menuShiftUpClick(Sender: TObject);
     procedure updateLabelClick(Sender: TObject);
     procedure updateTimerTimer(Sender: TObject);
     procedure ColourButtonMouseDown(Sender: TObject; Button: TMouseButton;
@@ -392,6 +405,7 @@ procedure TfrmMain.ButtonMouseDown(Sender: TObject; Button: TMouseButton;
 var
   cc: TColor;
   i,j: Integer;
+  p: TPoint;
 begin
   if Button = mbLeft then
   begin
@@ -411,6 +425,22 @@ begin
     UpdateViewArea;
     IsSaved := false;
     UpdateWindowTitle;
+  end;
+  if Button = mbRight then
+  begin
+    if GetCursorPos(p) then
+    begin
+      GetButtonPosition(Sender as TShape,i,j);
+      if i > 0 then menuMoveRowUp.Enabled := true
+      else menuMoveRowUp.Enabled := false;
+      if j > 0 then menuMoveColLeft.Enabled := true
+      else menuMoveColLeft.Enabled := false;
+      if i = 7 then menuMoveRowDown.Enabled := false
+      else menuMoveRowDown.Enabled := true;
+      if j = 7 then menuMoveColRight.Enabled := false
+      else menuMoveColRight.Enabled := true;
+      menuEdit.Popup(p.X, p.Y);
+    end;
   end;
 end;
 
@@ -510,6 +540,82 @@ begin
       tmp[x,y] := pixels[7-y,x];
     end;
   end;
+  pixels := tmp;
+  UpdateViewArea;
+  SetButtons;
+  IsSaved := false;
+end;
+
+procedure TfrmMain.menuShiftDownClick(Sender: TObject);
+var
+  tmp: Array[0..7,0..7] of Byte;
+  x,y: Integer;
+begin
+  for x := 0 to 6 do
+  begin
+    for y := 0 to 7 do
+    begin
+      tmp[x+1,y] := pixels[x,y];
+    end;
+  end;
+  for x := 0 to 7 do tmp[0,x] := 0;
+  pixels := tmp;
+  UpdateViewArea;
+  SetButtons;
+  IsSaved := false;
+end;
+
+procedure TfrmMain.menuShiftLeftClick(Sender: TObject);
+var
+  tmp: Array[0..7,0..7] of Byte;
+  x,y: Integer;
+begin
+  for x := 0 to 7 do
+  begin
+    for y := 1 to 7 do
+    begin
+      tmp[x,y-1] := pixels[x,y];
+    end;
+  end;
+  for x := 0 to 7 do tmp[x,7] := 0;
+  pixels := tmp;
+  UpdateViewArea;
+  SetButtons;
+  IsSaved := false;
+end;
+
+procedure TfrmMain.menuShiftRightClick(Sender: TObject);
+var
+  tmp: Array[0..7,0..7] of Byte;
+  x,y: Integer;
+begin
+  for x := 0 to 7 do
+  begin
+    for y := 0 to 6 do
+    begin
+      tmp[x,y+1] := pixels[x,y];
+    end;
+  end;
+  for x := 0 to 7 do tmp[x,0] := 0;
+  pixels := tmp;
+  UpdateViewArea;
+  SetButtons;
+  IsSaved := false;
+end;
+
+procedure TfrmMain.menuShiftUpClick(Sender: TObject);
+var
+  tmp: Array[0..7,0..7] of Byte;
+  x,y: Integer;
+begin
+  for x := 1 to 7 do
+  begin
+    for y := 0 to 7 do
+    begin
+      tmp[x-1,y] := pixels[x,y];
+    end;
+  end;
+  for x := 0 to 7 do tmp[7,x] := 0;
   pixels := tmp;
   UpdateViewArea;
   SetButtons;
