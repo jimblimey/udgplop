@@ -1,15 +1,15 @@
 object frmMain: TfrmMain
   Left = 248
-  Height = 463
+  Height = 478
   Top = 119
   Width = 730
   Caption = 'frmMain'
-  ClientHeight = 463
+  ClientHeight = 478
   ClientWidth = 730
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.9.0.0'
+  LCLVersion = '2.1.0.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -92,7 +92,7 @@ object frmMain: TfrmMain
   end
   object Panel1: TPanel
     Left = 0
-    Height = 437
+    Height = 452
     Top = 26
     Width = 440
     Align = alClient
@@ -100,11 +100,11 @@ object frmMain: TfrmMain
   end
   object Panel2: TPanel
     Left = 440
-    Height = 437
+    Height = 452
     Top = 26
     Width = 290
     Align = alRight
-    ClientHeight = 437
+    ClientHeight = 452
     ClientWidth = 290
     TabOrder = 2
     object textOutput: TMemo
@@ -125,7 +125,7 @@ object frmMain: TfrmMain
     object updatePanel: TPanel
       Left = 8
       Height = 35
-      Top = 398
+      Top = 413
       Width = 281
       Anchors = [akRight, akBottom]
       ClientHeight = 35
@@ -148,6 +148,13 @@ object frmMain: TfrmMain
         ParentFont = False
         OnClick = updateLabelClick
       end
+    end
+    object imgPreview: TImage
+      Left = 11
+      Height = 16
+      Top = 376
+      Width = 16
+      Stretch = True
     end
   end
   object colourPanel: TScrollBox

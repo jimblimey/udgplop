@@ -21,6 +21,7 @@ type
     btnTransform: TButton;
     btnPaper: TButton;
     btnInk: TButton;
+    imgPreview: TImage;
     menuInvert: TMenuItem;
     menuFlip: TMenuItem;
     menuShiftRight: TMenuItem;
@@ -693,6 +694,7 @@ var
   i,j: Integer;
   s: String;
   plines: TStrings;
+  bmp: graphics.TBitmap;
 begin
   textOutput.Lines.Clear;
   plines := TStringList.Create;
@@ -718,6 +720,19 @@ begin
   end;
   textOutput.Lines.Add(s);
   plines.Free;
+  bmp := graphics.TBitMap.Create;
+  bmp.Width := 8;
+  bmp.Height := 8;
+  for i := 0 to 7 do
+  begin
+    for j := 0 to 7 do
+    begin
+      if pixels[i,j] = 1 then bmp.Canvas.pixels[j,i] := clBlack
+      else bmp.Canvas.Pixels[j,i] := clWhite;
+    end;
+  end;
+  imgPreview.Picture.Assign(bmp);
+  bmp.Free;
 end;
 
 procedure TfrmMain.SetButtons;
