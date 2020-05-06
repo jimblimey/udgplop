@@ -1,11 +1,11 @@
 object frmMain: TfrmMain
   Left = 248
-  Height = 478
+  Height = 517
   Top = 119
-  Width = 730
+  Width = 785
   Caption = 'frmMain'
-  ClientHeight = 478
-  ClientWidth = 730
+  ClientHeight = 517
+  ClientWidth = 785
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   Position = poScreenCenter
@@ -14,7 +14,7 @@ object frmMain: TfrmMain
     Left = 0
     Height = 26
     Top = 0
-    Width = 730
+    Width = 785
     Caption = 'ToolBar1'
     TabOrder = 0
     object btnNew: TButton
@@ -45,7 +45,7 @@ object frmMain: TfrmMain
       TabOrder = 2
     end
     object btnAbout: TButton
-      Left = 526
+      Left = 626
       Height = 22
       Top = 2
       Width = 75
@@ -89,22 +89,40 @@ object frmMain: TfrmMain
       OnClick = btnInkClick
       TabOrder = 7
     end
+    object listSpriteSize: TComboBox
+      Left = 526
+      Height = 23
+      Top = 2
+      Width = 100
+      ItemHeight = 15
+      ItemIndex = 0
+      Items.Strings = (
+        '8x8'
+        '8x16'
+        '16x8'
+        '16x16'
+      )
+      OnChange = listSpriteSizeChange
+      Style = csDropDownList
+      TabOrder = 8
+      Text = '8x8'
+    end
   end
   object Panel1: TPanel
     Left = 0
-    Height = 452
+    Height = 491
     Top = 26
-    Width = 440
+    Width = 495
     Align = alClient
     TabOrder = 1
   end
   object Panel2: TPanel
-    Left = 440
-    Height = 452
+    Left = 495
+    Height = 491
     Top = 26
     Width = 290
     Align = alRight
-    ClientHeight = 452
+    ClientHeight = 491
     ClientWidth = 290
     TabOrder = 2
     object textOutput: TMemo
@@ -125,7 +143,7 @@ object frmMain: TfrmMain
     object updatePanel: TPanel
       Left = 8
       Height = 35
-      Top = 413
+      Top = 452
       Width = 281
       Anchors = [akRight, akBottom]
       ClientHeight = 35

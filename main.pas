@@ -21,6 +21,7 @@ type
     btnTransform: TButton;
     btnPaper: TButton;
     btnInk: TButton;
+    listSpriteSize: TComboBox;
     imgPreview: TImage;
     menuInvert: TMenuItem;
     menuFlip: TMenuItem;
@@ -59,6 +60,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure ButtonMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure listSpriteSizeChange(Sender: TObject);
     procedure menuFlipClick(Sender: TObject);
     procedure menuInvertClick(Sender: TObject);
     procedure menuMirrorClick(Sender: TObject);
@@ -73,8 +75,10 @@ type
     procedure ColourButtonMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   private
-    buttons: Array[0..7,0..7] of TShape;
-    pixels: Array[0..7,0..7] of Byte;
+    //buttons: Array[0..7,0..7] of TShape;
+    //pixels: Array[0..7,0..7] of Byte;
+    buttons: Array of Array of TShape;
+    pixels: Array of Array of Byte;
     ColourButtons: Array[0..14] of TShape;
     IsSaved: Boolean;
     CurrentFile: String;
@@ -83,11 +87,14 @@ type
     Paper: TColor;
     Ink: TColor;
     ZXColours: Array[0..14] of TColor;
+    SpriteWidth: Integer;
+    SpriteHeight: Integer;
     procedure GetButtonPosition(const button: TShape; var x: Integer; var y: Integer);
     procedure UpdateViewArea;
     procedure SetButtons;
     procedure UpdateWindowTitle;
-    function GetLineValue(l: Integer): Byte;
+    function GetLineValue(l: Integer; p: Integer; c: Integer): Byte;
+    procedure SetSpriteSize;
   public
 
   end;
@@ -164,9 +171,7 @@ end;
 
 procedure TfrmMain.FormCreate(Sender: TObject);
 var
-  x,y,c: Integer;
-const
-  bsize = 50;
+  c: Integer;
 begin
   ZXColours[0] := HexToTColor('000000');
   ZXColours[1] := HexToTColor('0000C0');
@@ -189,30 +194,8 @@ begin
   Paper := clWhite;
   Ink := clBlack;
 
-  c := 0;
-  for x := 0 to 7 do
-  begin
-    for y := 0 to 7 do
-    begin
-      buttons[x,y] := TShape.Create(Self);
-      buttons[x,y].Parent := Panel1;
-      buttons[x,y].Width := bsize;
-      buttons[x,y].Height := bsize;
-      buttons[x,y].Left := x * (bsize + 2);
-      buttons[x,y].Top := y * (bsize + 2);
-      buttons[x,y].OnMouseDown := @ButtonMouseDown;
-      buttons[x,y].Brush.Color := Paper;
-      buttons[x,y].Pen.Color := Paper;
-      inc(c);
-    end;
-  end;
-  for x := 0 to 7 do
-  begin
-    for y := 0 to 7 do
-    begin
-      pixels[x,y] := 0;
-    end;
-  end;
+  SetSpriteSize;
+
   for c := 0 to 14 do
   begin
     ColourButtons[c] := TShape.Create(Self);
@@ -445,9 +428,24 @@ begin
   end;
 end;
 
+procedure TfrmMain.listSpriteSizeChange(Sender: TObject);
+var
+  x,y: Integer;
+begin
+  for x := 0 to High(buttons) do
+  begin
+    for y := 0 to High(buttons[x]) do
+    begin
+      buttons[x,y].Free;
+    end;
+  end;
+  SetSpriteSize;
+end;
+
 procedure TfrmMain.menuFlipClick(Sender: TObject);
 var
-  tmp: Array[0..7,0..7] of Byte;
+  //tmp: Array[0..7,0..7] of Byte;
+  tmp: Array of Array of Byte;
   x,y: Integer;
   j: Integer;
 begin
@@ -486,7 +484,8 @@ end;
 
 procedure TfrmMain.menuMirrorClick(Sender: TObject);
 var
-  tmp: Array[0..7,0..7] of Byte;
+//  tmp: Array[0..7,0..7] of Byte;
+  tmp: Array of Array of Byte;
   x,y: Integer;
   j: Integer;
 begin
@@ -508,7 +507,8 @@ end;
 
 procedure TfrmMain.menuRotateAClick(Sender: TObject);
 var
-  tmp: Array[0..7,0..7] of Byte;
+//  tmp: Array[0..7,0..7] of Byte;
+  tmp: Array of Array of Byte;
   x,y,t: Integer;
 begin
   for x := 0 to 3 do
@@ -530,7 +530,8 @@ end;
 
 procedure TfrmMain.menuRotateCClick(Sender: TObject);
 var
-  tmp: Array[0..7,0..7] of Byte;
+// tmp: Array[0..7,0..7] of Byte;
+  tmp: Array of Array of Byte;
   x,y: Integer;
 begin
   tmp := pixels;
@@ -549,7 +550,8 @@ end;
 
 procedure TfrmMain.menuShiftDownClick(Sender: TObject);
 var
-  tmp: Array[0..7,0..7] of Byte;
+//  tmp: Array[0..7,0..7] of Byte;
+  tmp: Array of Array of Byte;
   x,y: Integer;
 begin
   for x := 0 to 6 do
@@ -568,7 +570,8 @@ end;
 
 procedure TfrmMain.menuShiftLeftClick(Sender: TObject);
 var
-  tmp: Array[0..7,0..7] of Byte;
+//  tmp: Array[0..7,0..7] of Byte;
+  tmp: Array of Array of Byte;
   x,y: Integer;
 begin
   for x := 0 to 7 do
@@ -587,7 +590,8 @@ end;
 
 procedure TfrmMain.menuShiftRightClick(Sender: TObject);
 var
-  tmp: Array[0..7,0..7] of Byte;
+//  tmp: Array[0..7,0..7] of Byte;
+  tmp: Array of Array of Byte;
   x,y: Integer;
 begin
   for x := 0 to 7 do
@@ -606,7 +610,8 @@ end;
 
 procedure TfrmMain.menuShiftUpClick(Sender: TObject);
 var
-  tmp: Array[0..7,0..7] of Byte;
+//  tmp: Array[0..7,0..7] of Byte;
+  tmp: Array of Array of Byte;
   x,y: Integer;
 begin
   for x := 1 to 7 do
@@ -676,14 +681,14 @@ var
 begin
   x := -1;
   y := -1;
-  for i := 0 to 7 do
+  for i := 0 to SpriteWidth-1 do
   begin
-    for j := 0 to 7 do
+    for j := 0 to SpriteHeight-1 do
     begin
       if button = buttons[i,j] then
       begin
-        x := j;
-        y := i;
+        x := i;
+        y := j;
       end;
     end;
   end;
@@ -698,7 +703,7 @@ var
 begin
   textOutput.Lines.Clear;
   plines := TStringList.Create;
-  for i := 0 to 7 do
+{  for i := 0 to 7 do
   begin
     s := '';
     for j := 0 to 7 do
@@ -706,29 +711,42 @@ begin
       s := s + IntToStr(pixels[i,j]);
     end;
     plines.Add('POKE USR "A"+'+IntToStr(i)+', BIN ' + s);
-    s := s + ' ' + IntToStr(GetLineValue(i));
+    s := s + ' ' + IntToStr(GetLineValue(j));
     textOutput.Lines.Add(s);
   end;
   textOutput.Lines.Add('');
   textOutput.Lines.AddStrings(plines);
-  textOutput.Lines.Add('');
+  textOutput.Lines.Add('');}
   s := 'DATA ';
-  for i := 0 to 7 do
+  if SpriteWidth = 8 then
   begin
-    s := s + IntToStr(GetLineValue(i));
-    if i < 7 then s := s + ', ';
+    for i := 0 to SpriteHeight-1 do
+    begin
+      s := s + IntToStr(GetLineValue(i,0,7));
+      if i < SpriteHeight-1 then s := s + ', ';
+    end;
+    textOutput.Lines.Add(s);
+  end
+  else
+  begin
+    for i := 0 to SpriteHeight-1 do
+    begin
+      //s := s + IntToStr(GetLineValue(i));
+      //if i < SpriteHeight-1 then s := s + ', ';
+    end;
+    textOutput.Lines.Add(s);
   end;
-  textOutput.Lines.Add(s);
+
   plines.Free;
   bmp := graphics.TBitMap.Create;
-  bmp.Width := 8;
-  bmp.Height := 8;
-  for i := 0 to 7 do
+  bmp.Width := SpriteWidth;
+  bmp.Height := SpriteHeight;
+  for i := 0 to SpriteWidth-1 do
   begin
-    for j := 0 to 7 do
+    for j := 0 to SpriteHeight-1 do
     begin
-      if pixels[i,j] = 1 then bmp.Canvas.pixels[j,i] := clBlack
-      else bmp.Canvas.Pixels[j,i] := clWhite;
+      if pixels[i,j] = 1 then bmp.Canvas.pixels[i,j] := Ink
+      else bmp.Canvas.Pixels[i,j] := Paper;
     end;
   end;
   imgPreview.Picture.Assign(bmp);
@@ -739,12 +757,12 @@ procedure TfrmMain.SetButtons;
 var
   i,j: Integer;
 begin
-  for i := 0 to 7 do
+  for i := 0 to SpriteWidth-1 do
   begin
-    for j := 0 to 7 do
+    for j := 0 to SpriteHeight-1 do
     begin
-      if pixels[i,j] = 1 then buttons[j,i].Brush.Color := Ink
-      else buttons[j,i].Brush.Color := Paper;
+      if pixels[i,j] = 1 then buttons[i,j].Brush.Color := Ink
+      else buttons[i,j].Brush.Color := Paper;
     end;
   end;
 end;
@@ -757,18 +775,72 @@ begin
   Application.Title := frmMain.Caption;
 end;
 
-function TfrmMain.GetLineValue(l: Integer): Byte;
+function TfrmMain.GetLineValue(l: Integer; p: Integer; c: Integer): Byte;
 var
   i: Integer;
   s: String;
 begin
   Result := 0;
   s := '';
-  for i := 0 to 7 do
+  for i := p to c do
   begin
-    s := s + IntToStr(pixels[l,i]);
+    s := s + IntToStr(pixels[i,l]);
   end;
   Result := BinToDec(s);
+end;
+
+procedure TfrmMain.SetSpriteSize;
+var
+  x,y,bsize: Integer;
+begin
+  SpriteWidth := 8;
+  SpriteHeight := 8;
+  bsize := 50;
+  if listSpriteSize.ItemIndex = 1 then
+  begin
+    SpriteWidth := 8;
+    SpriteHeight := 16;
+    bsize := 25;
+  end;
+  if listSpriteSize.ItemIndex = 2 then
+  begin
+    SpriteWidth := 16;
+    SpriteHeight := 8;
+    bsize := 25;
+  end;
+  if listSpriteSize.ItemIndex = 3 then
+  begin
+    SpriteWidth := 16;
+    SpriteHeight := 16;
+    bsize := 25;
+  end;
+  SetLength(pixels, SpriteWidth, SpriteHeight);
+  SetLength(buttons, SpriteWidth, SpriteHeight);
+  //bsize := 50;
+  for x := 0 to SpriteWidth-1 do
+  begin
+    for y := 0 to SpriteHeight-1 do
+    begin
+      buttons[x,y] := TShape.Create(Self);
+      buttons[x,y].Parent := Panel1;
+      buttons[x,y].Width := bsize;
+      buttons[x,y].Height := bsize;
+      buttons[x,y].Left := x * (bsize + 2);
+      buttons[x,y].Top := y * (bsize + 2);
+      buttons[x,y].OnMouseDown := @ButtonMouseDown;
+      buttons[x,y].Brush.Color := Paper;
+      buttons[x,y].Pen.Color := Paper;
+    end;
+  end;
+  for x := 0 to SpriteWidth-1 do
+  begin
+    for y := 0 to SpriteHeight-1 do
+    begin
+      pixels[x,y] := 0;
+    end;
+  end;
+  imgPreview.Width := SpriteWidth * 2;
+  imgPreview.Height := SpriteHeight * 2;
 end;
 
 end.
