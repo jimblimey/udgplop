@@ -315,27 +315,35 @@ begin
     if not FileExists(OpenDialog1.Filename) then exit;
     fi := TStringList.Create;
     fi.LoadFromFile(OpenDialog1.Filename);
-    if fi.Count > 7 then
+    // Support loading original format files
+    if Pos('#APPVER',fi.Text) < 1 then
     begin
-      for i := 0 to 7 do
+      if fi.Count > 7 then
       begin
-        parts := fi[i].Split([' ']);
-        if High(parts) = 1 then
+        for i := 0 to 7 do
         begin
-          b := IntToBin(StrToIntDef(parts[1],0),8);
-          for j := 1 to 8 do
+          parts := fi[i].Split([' ']);
+          if High(parts) = 1 then
           begin
-            pixels[i,j-1] := StrToInt(b[j]);
-          end;
-        end
-        else
-        begin
-          for j := 1 to 8 do
+            b := IntToBin(StrToIntDef(parts[1],0),8);
+            for j := 1 to 8 do
+            begin
+              pixels[i,j-1] := StrToInt(b[j]);
+            end;
+          end
+          else
           begin
-            pixels[i,j-1] := 0;
+            for j := 1 to 8 do
+            begin
+              pixels[i,j-1] := 0;
+            end;
           end;
         end;
       end;
+    end
+    else
+    begin
+      // New file format
     end;
     fi.Free;
     UpdateViewArea;
