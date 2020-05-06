@@ -731,8 +731,11 @@ begin
   begin
     for i := 0 to SpriteHeight-1 do
     begin
-      //s := s + IntToStr(GetLineValue(i));
-      //if i < SpriteHeight-1 then s := s + ', ';
+      for j := 0 to 1 do
+      begin
+        s := s + IntToStr(GetLineValue(i,j*8,(j*8)+7));
+        if i < SpriteHeight-j then s := s + ', ';
+      end;
     end;
     textOutput.Lines.Add(s);
   end;
