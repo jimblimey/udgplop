@@ -21,6 +21,7 @@ type
     btnTransform: TButton;
     btnPaper: TButton;
     btnInk: TButton;
+    checkRowFirst: TCheckBox;
     listSpriteSize: TComboBox;
     imgPreview: TImage;
     menuInvert: TMenuItem;
@@ -56,6 +57,7 @@ type
     procedure btnPaperClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
     procedure btnTransformClick(Sender: TObject);
+    procedure checkRowFirstChange(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
     procedure ButtonMouseDown(Sender: TObject; Button: TMouseButton;
@@ -75,8 +77,6 @@ type
     procedure ColourButtonMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   private
-    //buttons: Array[0..7,0..7] of TShape;
-    //pixels: Array[0..7,0..7] of Byte;
     buttons: Array of Array of TShape;
     pixels: Array of Array of Byte;
     ColourButtons: Array[0..14] of TShape;
@@ -369,6 +369,11 @@ begin
   menuTransform.Popup(lowerLeft.X, lowerLeft.Y);
 end;
 
+procedure TfrmMain.checkRowFirstChange(Sender: TObject);
+begin
+  UpdateViewArea;
+end;
+
 procedure TfrmMain.FormCloseQuery(Sender: TObject; var CanClose: boolean);
 var
   i: Integer;
@@ -444,7 +449,6 @@ end;
 
 procedure TfrmMain.menuFlipClick(Sender: TObject);
 var
-  //tmp: Array[0..7,0..7] of Byte;
   tmp: Array of Array of Byte;
   x,y: Integer;
   j: Integer;
@@ -484,7 +488,6 @@ end;
 
 procedure TfrmMain.menuMirrorClick(Sender: TObject);
 var
-//  tmp: Array[0..7,0..7] of Byte;
   tmp: Array of Array of Byte;
   x,y: Integer;
   j: Integer;
@@ -507,10 +510,10 @@ end;
 
 procedure TfrmMain.menuRotateAClick(Sender: TObject);
 var
-//  tmp: Array[0..7,0..7] of Byte;
   tmp: Array of Array of Byte;
   x,y,t: Integer;
 begin
+  SetLength(tmp, SpriteWidth, SpriteHeight);
   for x := 0 to 3 do
   begin
     for y := 0 to 7-x do
@@ -530,7 +533,6 @@ end;
 
 procedure TfrmMain.menuRotateCClick(Sender: TObject);
 var
-// tmp: Array[0..7,0..7] of Byte;
   tmp: Array of Array of Byte;
   x,y: Integer;
 begin
@@ -550,10 +552,10 @@ end;
 
 procedure TfrmMain.menuShiftDownClick(Sender: TObject);
 var
-//  tmp: Array[0..7,0..7] of Byte;
   tmp: Array of Array of Byte;
   x,y: Integer;
 begin
+  SetLength(tmp, SpriteWidth, SpriteHeight);
   for x := 0 to 6 do
   begin
     for y := 0 to 7 do
@@ -570,10 +572,10 @@ end;
 
 procedure TfrmMain.menuShiftLeftClick(Sender: TObject);
 var
-//  tmp: Array[0..7,0..7] of Byte;
   tmp: Array of Array of Byte;
   x,y: Integer;
 begin
+  SetLength(tmp, SpriteWidth, SpriteHeight);
   for x := 0 to 7 do
   begin
     for y := 1 to 7 do
@@ -590,10 +592,10 @@ end;
 
 procedure TfrmMain.menuShiftRightClick(Sender: TObject);
 var
-//  tmp: Array[0..7,0..7] of Byte;
   tmp: Array of Array of Byte;
   x,y: Integer;
 begin
+  SetLength(tmp, SpriteWidth, SpriteHeight);
   for x := 0 to 7 do
   begin
     for y := 0 to 6 do
@@ -610,10 +612,10 @@ end;
 
 procedure TfrmMain.menuShiftUpClick(Sender: TObject);
 var
-//  tmp: Array[0..7,0..7] of Byte;
   tmp: Array of Array of Byte;
   x,y: Integer;
 begin
+  SetLength(tmp, SpriteWidth, SpriteHeight);
   for x := 1 to 7 do
   begin
     for y := 0 to 7 do
@@ -729,12 +731,26 @@ begin
   end
   else
   begin
-    for i := 0 to SpriteHeight-1 do
+    if (checkRowFirst.Checked) and (SpriteHeight = 16) then
     begin
       for j := 0 to 1 do
       begin
-        s := s + IntToStr(GetLineValue(i,j*8,(j*8)+7));
-        if i < SpriteHeight-j then s := s + ', ';
+        for i := 0 to SpriteHeight-1 do
+        begin
+          s := s + IntToStr(GetLineValue(i,j*8,(j*8)+7));
+          if i < SpriteHeight-j then s := s + ', ';
+        end;
+      end;
+    end
+    else
+    begin
+      for i := 0 to SpriteHeight-1 do
+      begin
+        for j := 0 to 1 do
+        begin
+          s := s + IntToStr(GetLineValue(i,j*8,(j*8)+7));
+          if i < SpriteHeight-j then s := s + ', ';
+        end;
       end;
     end;
     textOutput.Lines.Add(s);
@@ -819,7 +835,6 @@ begin
   end;
   SetLength(pixels, SpriteWidth, SpriteHeight);
   SetLength(buttons, SpriteWidth, SpriteHeight);
-  //bsize := 50;
   for x := 0 to SpriteWidth-1 do
   begin
     for y := 0 to SpriteHeight-1 do
@@ -844,6 +859,8 @@ begin
   end;
   imgPreview.Width := SpriteWidth * 2;
   imgPreview.Height := SpriteHeight * 2;
+  if listSpriteSize.ItemIndex = 3 then checkRowFirst.Visible := true
+  else checkRowFirst.Visible := false;
 end;
 
 end.
