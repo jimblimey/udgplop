@@ -5,8 +5,9 @@ unit main;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ComCtrls,
-  StdCtrls, LCLIntF, Menus, StrUtils, fphttpclient{$IFDEF WINDOWS}, Windows{$ENDIF}, LCLType;
+  {$IFDEF WINDOWS}Windows, {$ENDIF}Classes, SysUtils, Forms, Controls, Graphics,
+  Dialogs, ExtCtrls, ComCtrls, StdCtrls, LCLIntF, Menus, StrUtils, fphttpclient,
+  LCLType, math;
 
 type
 
@@ -167,6 +168,20 @@ begin
   Result := RGBToColor(r,g,b);
 end;
 
+function ColourContrast(incol: TColor): TColor;
+const
+  gamma = 2.2;
+var
+  r,g,b,L: Double;
+begin
+  r := Red(incol) / 255;
+  g := Green(incol) / 255;
+  b := Blue(incol) / 255;
+  L := 0.2126 * power(R, gamma) + 0.7152 * power(G, gamma) + 0.0722 * power(B, gamma);
+  if L > power(0.5, gamma) then Result := clBlack
+  else Result := clWhite;
+end;
+
 { TfrmMain }
 
 procedure TfrmMain.FormCreate(Sender: TObject);
@@ -225,9 +240,9 @@ begin
   end;
   CurrentFile := 'Untitled';
   IsSaved := true;
-  for i := 0 to 7 do
+  for i := 0 to SpriteWidth-1 do
   begin
-    for j := 0 to 7 do
+    for j := 0 to SpriteHeight-1 do
     begin
       pixels[i,j] := 0;
       buttons[i,j].Brush.Color := Paper;
@@ -641,8 +656,18 @@ procedure TfrmMain.ColourButtonMouseDown(Sender: TObject; Button: TMouseButton;
 begin
   if Button = mbLeft then
   begin
-    if PaperSelect then Paper := (Sender as TShape).Brush.Color;
-    if InkSelect then Ink := (Sender as TShape).Brush.Color;
+    if PaperSelect then
+    begin
+      Paper := (Sender as TShape).Brush.Color;
+      btnPaper.Color := (Sender as TShape).Brush.Color;
+      btnPaper.Font.Color := ColourContrast((Sender as TShape).Brush.Color);
+    end;
+    if InkSelect then
+    begin
+      Ink := (Sender as TShape).Brush.Color;
+      btnInk.Color := (Sender as TShape).Brush.Color;
+      btnInk.Font.Color := ColourContrast((Sender as TShape).Brush.Color);
+    end;
   end;
   colourPanel.Visible := false;
   SetButtons;
