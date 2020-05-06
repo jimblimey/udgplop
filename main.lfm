@@ -168,9 +168,9 @@ object frmMain: TfrmMain
       end
     end
     object imgPreview: TImage
-      Left = 11
+      Left = 8
       Height = 16
-      Top = 376
+      Top = 392
       Width = 16
       Stretch = True
     end
