@@ -477,10 +477,10 @@ var
   j: Integer;
 begin
   tmp := pixels;
-  j := 7;
-  for x := 0 to 7 do
+  j := SpriteWidth-1;
+  for x := 0 to SpriteWidth-1 do
   begin
-    for y := 0 to 7 do
+    for y := 0 to SpriteHeight-1 do
     begin
       tmp[j,y] := pixels[x,y];
     end;
@@ -496,9 +496,9 @@ procedure TfrmMain.menuInvertClick(Sender: TObject);
 var
   x, y: Integer;
 begin
-  for x := 0 to 7 do
+  for x := 0 to SpriteWidth-1 do
   begin
-    for y := 0 to 7 do
+    for y := 0 to SpriteHeight-1 do
     begin
       if pixels[x,y] = 1 then pixels[x,y] := 0
       else pixels[x,y] := 1;
@@ -516,10 +516,10 @@ var
   j: Integer;
 begin
   tmp := pixels;
-  for x := 0 to 7 do
+  for x := 0 to SpriteWidth-1 do
   begin
-    j := 7;
-    for y := 0 to 7 do
+    j := SpriteHeight-1;
+    for y := 0 to SpriteHeight-1 do
     begin
       tmp[x,j] := pixels[x,y];
       dec(j);
