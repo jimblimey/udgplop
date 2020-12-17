@@ -599,14 +599,14 @@ var
   x,y: Integer;
 begin
   SetLength(tmp, SpriteWidth, SpriteHeight);
-  for x := 0 to 7 do
+  for x := 0 to SpriteWidth-1 do
   begin
-    for y := 0 to 6 do
+    for y := 0 to SpriteHeight-2 do
     begin
       tmp[x,y+1] := pixels[x,y];
     end;
   end;
-  for x := 0 to 7 do tmp[x,0] := 0;
+  for x := 0 to SpriteWidth-1 do tmp[x,0] := 0;
   pixels := tmp;
   UpdateViewArea;
   SetButtons;
@@ -619,14 +619,14 @@ var
   x,y: Integer;
 begin
   SetLength(tmp, SpriteWidth, SpriteHeight);
-  for x := 1 to 7 do
+  for x := 1 to SpriteWidth-1 do
   begin
-    for y := 0 to 7 do
+    for y := 0 to SpriteHeight-1 do
     begin
       tmp[x-1,y] := pixels[x,y];
     end;
   end;
-  for x := 0 to 7 do tmp[7,x] := 0;
+  for x := 0 to SpriteWidth-1 do tmp[SpriteHeight-1,x] := 0;
   pixels := tmp;
   UpdateViewArea;
   SetButtons;
@@ -666,7 +666,7 @@ begin
       tmp[x,y-1] := pixels[x,y];
     end;
   end;
-  for x := 0 to SpriteWidth-1 do tmp[x,7] := 0;
+  for x := 0 to SpriteWidth-1 do tmp[x,SpriteHeight-1] := 0;
   pixels := tmp;
   UpdateViewArea;
   SetButtons;
