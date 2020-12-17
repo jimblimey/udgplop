@@ -108,15 +108,16 @@ object frmMain: TfrmMain
       Text = '8x8'
     end
   end
-  object Panel1: TPanel
+  object buttonPanel: TPanel
     Left = 0
     Height = 491
     Top = 26
     Width = 488
     Align = alClient
     TabOrder = 1
+    OnResize = buttonPanelResize
   end
-  object Panel2: TPanel
+  object infoPanel: TPanel
     Left = 488
     Height = 491
     Top = 26
@@ -238,15 +239,19 @@ object frmMain: TfrmMain
     Top = 269
     object menuMoveRowUp: TMenuItem
       Caption = 'Move row up'
+      OnClick = menuMoveRowUpClick
     end
     object menuMoveRowDown: TMenuItem
       Caption = 'Move row down'
+      OnClick = menuMoveRowDownClick
     end
     object menuMoveColLeft: TMenuItem
       Caption = 'Move column left'
+      OnClick = menuMoveColLeftClick
     end
     object menuMoveColRight: TMenuItem
       Caption = 'Move column right'
+      OnClick = menuMoveColRightClick
     end
     object menuShiftUp: TMenuItem
       Caption = 'Shift up'

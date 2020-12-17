@@ -46,8 +46,8 @@ type
     updatePanel: TPanel;
     SaveDialog1: TSaveDialog;
     textOutput: TMemo;
-    Panel1: TPanel;
-    Panel2: TPanel;
+    buttonPanel: TPanel;
+    infoPanel: TPanel;
     updateTimer: TTimer;
     ToolBar1: TToolBar;
     procedure btnAboutClick(Sender: TObject);
@@ -58,6 +58,7 @@ type
     procedure btnPaperClick(Sender: TObject);
     procedure btnSaveClick(Sender: TObject);
     procedure btnTransformClick(Sender: TObject);
+    procedure buttonPanelResize(Sender: TObject);
     procedure checkRowFirstChange(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: boolean);
     procedure FormCreate(Sender: TObject);
@@ -67,6 +68,10 @@ type
     procedure menuFlipClick(Sender: TObject);
     procedure menuInvertClick(Sender: TObject);
     procedure menuMirrorClick(Sender: TObject);
+    procedure menuMoveColLeftClick(Sender: TObject);
+    procedure menuMoveColRightClick(Sender: TObject);
+    procedure menuMoveRowDownClick(Sender: TObject);
+    procedure menuMoveRowUpClick(Sender: TObject);
     procedure menuRotateAClick(Sender: TObject);
     procedure menuRotateCClick(Sender: TObject);
     procedure menuShiftDownClick(Sender: TObject);
@@ -96,6 +101,7 @@ type
     procedure UpdateWindowTitle;
     function GetLineValue(l: Integer; p: Integer; c: Integer): Byte;
     procedure SetSpriteSize;
+    procedure SetButtonSize;
   public
 
   end;
@@ -294,7 +300,7 @@ begin
   PaperSelect := false;
   InkSelect := true;
   colourPanel.Left := btnPaper.Left;
-  colourPanel.Top := Panel1.Top;
+  colourPanel.Top := buttonPanel.Top;
   colourPanel.Visible := not colourPanel.Visible;
 end;
 
@@ -359,7 +365,7 @@ begin
   PaperSelect := true;
   InkSelect := false;
   colourPanel.Left := btnPaper.Left;
-  colourPanel.Top := Panel1.Top;
+  colourPanel.Top := buttonPanel.Top;
   colourPanel.Visible := not colourPanel.Visible;
 end;
 
@@ -400,6 +406,11 @@ begin
     menuRotateA.Enabled := false;
   end;
   menuTransform.Popup(lowerLeft.X, lowerLeft.Y);
+end;
+
+procedure TfrmMain.buttonPanelResize(Sender: TObject);
+begin
+  SetButtonSize;
 end;
 
 procedure TfrmMain.checkRowFirstChange(Sender: TObject);
@@ -543,6 +554,26 @@ begin
   IsSaved := false;
 end;
 
+procedure TfrmMain.menuMoveColLeftClick(Sender: TObject);
+begin
+
+end;
+
+procedure TfrmMain.menuMoveColRightClick(Sender: TObject);
+begin
+
+end;
+
+procedure TfrmMain.menuMoveRowDownClick(Sender: TObject);
+begin
+
+end;
+
+procedure TfrmMain.menuMoveRowUpClick(Sender: TObject);
+begin
+
+end;
+
 procedure TfrmMain.menuRotateAClick(Sender: TObject);
 var
   tmp: Array of Array of Byte;
@@ -594,14 +625,14 @@ var
   x,y: Integer;
 begin
   SetLength(tmp, SpriteWidth, SpriteHeight);
-  for x := 0 to 6 do
+  for x := 0 to SpriteWidth-2 do
   begin
-    for y := 0 to 7 do
+    for y := 0 to SpriteHeight-1 do
     begin
       tmp[x+1,y] := pixels[x,y];
     end;
   end;
-  for x := 0 to 7 do tmp[0,x] := 0;
+  for x := 0 to SpriteWidth-1 do tmp[0,x] := 0;
   pixels := tmp;
   UpdateViewArea;
   SetButtons;
@@ -614,14 +645,14 @@ var
   x,y: Integer;
 begin
   SetLength(tmp, SpriteWidth, SpriteHeight);
-  for x := 0 to 7 do
+  for x := 0 to SpriteWidth-1 do
   begin
-    for y := 1 to 7 do
+    for y := 1 to SpriteHeight-1 do
     begin
       tmp[x,y-1] := pixels[x,y];
     end;
   end;
-  for x := 0 to 7 do tmp[x,7] := 0;
+  for x := 0 to SpriteWidth-1 do tmp[x,7] := 0;
   pixels := tmp;
   UpdateViewArea;
   SetButtons;
@@ -858,28 +889,24 @@ end;
 
 procedure TfrmMain.SetSpriteSize;
 var
-  x,y,bsize: Integer;
+  x,y: Integer;
 begin
   SpriteWidth := 8;
   SpriteHeight := 8;
-  bsize := 50;
   if listSpriteSize.ItemIndex = 1 then
   begin
     SpriteWidth := 8;
     SpriteHeight := 16;
-    bsize := 25;
   end;
   if listSpriteSize.ItemIndex = 2 then
   begin
     SpriteWidth := 16;
     SpriteHeight := 8;
-    bsize := 25;
   end;
   if listSpriteSize.ItemIndex = 3 then
   begin
     SpriteWidth := 16;
     SpriteHeight := 16;
-    bsize := 25;
   end;
   SetLength(pixels, SpriteWidth, SpriteHeight);
   SetLength(buttons, SpriteWidth, SpriteHeight);
@@ -888,16 +915,17 @@ begin
     for y := 0 to SpriteHeight-1 do
     begin
       buttons[x,y] := TShape.Create(Self);
-      buttons[x,y].Parent := Panel1;
-      buttons[x,y].Width := bsize;
+      buttons[x,y].Parent := buttonPanel;
+      {buttons[x,y].Width := bsize;
       buttons[x,y].Height := bsize;
       buttons[x,y].Left := x * (bsize + 2);
-      buttons[x,y].Top := y * (bsize + 2);
+      buttons[x,y].Top := y * (bsize + 2);}
       buttons[x,y].OnMouseDown := @ButtonMouseDown;
       buttons[x,y].Brush.Color := Paper;
       buttons[x,y].Pen.Color := Paper;
     end;
   end;
+  SetButtonSize;
   for x := 0 to SpriteWidth-1 do
   begin
     for y := 0 to SpriteHeight-1 do
@@ -909,6 +937,25 @@ begin
   imgPreview.Height := SpriteHeight * 2;
   if listSpriteSize.ItemIndex = 3 then checkRowFirst.Visible := true
   else checkRowFirst.Visible := false;
+end;
+
+procedure TfrmMain.SetButtonSize;
+var
+  x,y,n,h,c: Integer;
+begin
+  h := min(buttonPanel.Width,buttonPanel.Height);
+  c := max(SpriteWidth,SpriteHeight);
+  n := (h div c)-2;
+  for x := 0 to SpriteWidth-1 do
+  begin
+    for y := 0 to SpriteHeight-1 do
+    begin
+      buttons[x,y].Width := n;
+      buttons[x,y].Height := n;
+      buttons[x,y].Left := x * (n + 2);
+      buttons[x,y].Top := y * (n + 2);
+    end;
+  end;
 end;
 
 end.
