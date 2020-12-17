@@ -68,10 +68,6 @@ type
     procedure menuFlipClick(Sender: TObject);
     procedure menuInvertClick(Sender: TObject);
     procedure menuMirrorClick(Sender: TObject);
-    procedure menuMoveColLeftClick(Sender: TObject);
-    procedure menuMoveColRightClick(Sender: TObject);
-    procedure menuMoveRowDownClick(Sender: TObject);
-    procedure menuMoveRowUpClick(Sender: TObject);
     procedure menuRotateAClick(Sender: TObject);
     procedure menuRotateCClick(Sender: TObject);
     procedure menuShiftDownClick(Sender: TObject);
@@ -464,14 +460,14 @@ begin
     if GetCursorPos(p) then
     begin
       GetButtonPosition(Sender as TShape,i,j);
-      if i > 0 then menuMoveRowUp.Enabled := true
-      else menuMoveRowUp.Enabled := false;
-      if j > 0 then menuMoveColLeft.Enabled := true
-      else menuMoveColLeft.Enabled := false;
-      if i = 7 then menuMoveRowDown.Enabled := false
-      else menuMoveRowDown.Enabled := true;
-      if j = 7 then menuMoveColRight.Enabled := false
-      else menuMoveColRight.Enabled := true;
+      if j > 0 then menuShiftUp.Enabled := true
+      else menuShiftUp.Enabled := false;
+      if i > 0 then menuShiftLeft.Enabled := true
+      else menuShiftLeft.Enabled := false;
+      if j = SpriteHeight-1 then menuShiftDown.Enabled := false
+      else menuShiftDown.Enabled := true;
+      if i = SpriteWidth-1 then menuShiftRight.Enabled := false
+      else menuShiftRight.Enabled := true;
       menuEdit.Popup(p.X, p.Y);
     end;
   end;
@@ -497,7 +493,6 @@ var
   x,y: Integer;
   j: Integer;
 begin
-//  tmp := pixels;
   SetLength(tmp, SpriteWidth, SpriteHeight);
   j := SpriteWidth-1;
   for x := 0 to SpriteWidth-1 do
@@ -537,7 +532,6 @@ var
   x,y: Integer;
   j: Integer;
 begin
-//  tmp := pixels;
   SetLength(tmp, SpriteWidth, SpriteHeight);
   for x := 0 to SpriteWidth-1 do
   begin
@@ -552,26 +546,6 @@ begin
   UpdateViewArea;
   SetButtons;
   IsSaved := false;
-end;
-
-procedure TfrmMain.menuMoveColLeftClick(Sender: TObject);
-begin
-
-end;
-
-procedure TfrmMain.menuMoveColRightClick(Sender: TObject);
-begin
-
-end;
-
-procedure TfrmMain.menuMoveRowDownClick(Sender: TObject);
-begin
-
-end;
-
-procedure TfrmMain.menuMoveRowUpClick(Sender: TObject);
-begin
-
 end;
 
 procedure TfrmMain.menuRotateAClick(Sender: TObject);
@@ -916,10 +890,6 @@ begin
     begin
       buttons[x,y] := TShape.Create(Self);
       buttons[x,y].Parent := buttonPanel;
-      {buttons[x,y].Width := bsize;
-      buttons[x,y].Height := bsize;
-      buttons[x,y].Left := x * (bsize + 2);
-      buttons[x,y].Top := y * (bsize + 2);}
       buttons[x,y].OnMouseDown := @ButtonMouseDown;
       buttons[x,y].Brush.Color := Paper;
       buttons[x,y].Pen.Color := Paper;
