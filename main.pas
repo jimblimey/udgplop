@@ -389,6 +389,16 @@ var
 begin
   lowerLeft := Classes.Point(btnTransform.Left,btnTransform.Top + btnTransform.Height);
   lowerLeft := ClientToScreen(lowerLeft);
+  if SpriteWidth = SpriteHeight then
+  begin
+    menuRotateC.Enabled := true;
+    menuRotateA.Enabled := true;
+  end
+  else
+  begin
+    menuRotateC.Enabled := false;
+    menuRotateA.Enabled := false;
+  end;
   menuTransform.Popup(lowerLeft.X, lowerLeft.Y);
 end;
 
@@ -536,18 +546,15 @@ end;
 procedure TfrmMain.menuRotateAClick(Sender: TObject);
 var
   tmp: Array of Array of Byte;
-  x,y,t: Integer;
+  x,y,wy: Integer;
 begin
   SetLength(tmp, SpriteWidth, SpriteHeight);
-  for x := 0 to 3 do
+  wy := SpriteHeight-1;
+  for x := 0 to SpriteWidth-1 do
   begin
-    for y := 0 to 7-x do
+    for y := 0 to SpriteHeight-1 do
     begin
-      t := pixels[x,y];
-      tmp[x,y] := pixels[y,7-x];
-      tmp[y,7-x] := pixels[7-x,7-y];
-      tmp[7-x,7-y] := pixels[7-y,x];
-      tmp[7-y,x] := t;
+      tmp[x,y] := pixels[wy-y,x];
     end;
   end;
   pixels := tmp;
@@ -559,14 +566,20 @@ end;
 procedure TfrmMain.menuRotateCClick(Sender: TObject);
 var
   tmp: Array of Array of Byte;
-  x,y: Integer;
+  x,y,t,wx,wy: Integer;
 begin
-  tmp := pixels;
-  for x := 0 to 7 do
+  SetLength(tmp, SpriteWidth, SpriteHeight);
+  wx := SpriteWidth-1;
+  wy := SpriteHeight-1;
+  for x := 0 to 3 do
   begin
-    for y := 0 to 7 do
+    for y := 0 to wx-x do
     begin
-      tmp[x,y] := pixels[7-y,x];
+      t := pixels[x,y];
+      tmp[x,y] := pixels[y,wx-x];
+      tmp[y,wx-x] := pixels[wx-x,wy-y];
+      tmp[wx-x,wy-y] := pixels[wy-y,x];
+      tmp[wy-y,x] := t;
     end;
   end;
   pixels := tmp;
