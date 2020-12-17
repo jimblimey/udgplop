@@ -625,46 +625,6 @@ var
   x,y: Integer;
 begin
   SetLength(tmp, SpriteWidth, SpriteHeight);
-  for x := 0 to SpriteWidth-2 do
-  begin
-    for y := 0 to SpriteHeight-1 do
-    begin
-      tmp[x+1,y] := pixels[x,y];
-    end;
-  end;
-  for x := 0 to SpriteWidth-1 do tmp[0,x] := 0;
-  pixels := tmp;
-  UpdateViewArea;
-  SetButtons;
-  IsSaved := false;
-end;
-
-procedure TfrmMain.menuShiftLeftClick(Sender: TObject);
-var
-  tmp: Array of Array of Byte;
-  x,y: Integer;
-begin
-  SetLength(tmp, SpriteWidth, SpriteHeight);
-  for x := 0 to SpriteWidth-1 do
-  begin
-    for y := 1 to SpriteHeight-1 do
-    begin
-      tmp[x,y-1] := pixels[x,y];
-    end;
-  end;
-  for x := 0 to SpriteWidth-1 do tmp[x,7] := 0;
-  pixels := tmp;
-  UpdateViewArea;
-  SetButtons;
-  IsSaved := false;
-end;
-
-procedure TfrmMain.menuShiftRightClick(Sender: TObject);
-var
-  tmp: Array of Array of Byte;
-  x,y: Integer;
-begin
-  SetLength(tmp, SpriteWidth, SpriteHeight);
   for x := 0 to 7 do
   begin
     for y := 0 to 6 do
@@ -679,7 +639,7 @@ begin
   IsSaved := false;
 end;
 
-procedure TfrmMain.menuShiftUpClick(Sender: TObject);
+procedure TfrmMain.menuShiftLeftClick(Sender: TObject);
 var
   tmp: Array of Array of Byte;
   x,y: Integer;
@@ -693,6 +653,46 @@ begin
     end;
   end;
   for x := 0 to 7 do tmp[7,x] := 0;
+  pixels := tmp;
+  UpdateViewArea;
+  SetButtons;
+  IsSaved := false;
+end;
+
+procedure TfrmMain.menuShiftRightClick(Sender: TObject);
+var
+  tmp: Array of Array of Byte;
+  x,y: Integer;
+begin
+  SetLength(tmp, SpriteWidth, SpriteHeight);
+  for x := 0 to SpriteWidth-2 do
+  begin
+    for y := 0 to SpriteHeight-1 do
+    begin
+      tmp[x+1,y] := pixels[x,y];
+    end;
+  end;
+  for x := 0 to SpriteWidth-1 do tmp[0,x] := 0;
+  pixels := tmp;
+  UpdateViewArea;
+  SetButtons;
+  IsSaved := false;
+end;
+
+procedure TfrmMain.menuShiftUpClick(Sender: TObject);
+var
+  tmp: Array of Array of Byte;
+  x,y: Integer;
+begin
+  SetLength(tmp, SpriteWidth, SpriteHeight);
+  for x := 0 to SpriteWidth-1 do
+  begin
+    for y := 1 to SpriteHeight-1 do
+    begin
+      tmp[x,y-1] := pixels[x,y];
+    end;
+  end;
+  for x := 0 to SpriteWidth-1 do tmp[x,7] := 0;
   pixels := tmp;
   UpdateViewArea;
   SetButtons;
