@@ -476,7 +476,8 @@ var
   x,y: Integer;
   j: Integer;
 begin
-  tmp := pixels;
+//  tmp := pixels;
+  SetLength(tmp, SpriteWidth, SpriteHeight);
   j := SpriteWidth-1;
   for x := 0 to SpriteWidth-1 do
   begin
@@ -515,7 +516,8 @@ var
   x,y: Integer;
   j: Integer;
 begin
-  tmp := pixels;
+//  tmp := pixels;
+  SetLength(tmp, SpriteWidth, SpriteHeight);
   for x := 0 to SpriteWidth-1 do
   begin
     j := SpriteHeight-1;
