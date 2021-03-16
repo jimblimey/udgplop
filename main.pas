@@ -699,6 +699,7 @@ begin
   end;
   colourPanel.Visible := false;
   SetButtons;
+  UpdateViewArea;
 end;
 
 procedure TfrmMain.updateTimerTimer(Sender: TObject);
