@@ -576,7 +576,7 @@ begin
   SetLength(tmp, SpriteWidth, SpriteHeight);
   wx := SpriteWidth-1;
   wy := SpriteHeight-1;
-  for x := 0 to 3 do
+  for x := 0 to {3} (SpriteWidth div 2)-1 do
   begin
     for y := 0 to wx-x do
     begin
