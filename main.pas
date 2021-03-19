@@ -306,6 +306,8 @@ var
   fi: TStrings;
   parts: TStringArray;
   b: String;
+  w,h,c: Integer;
+  data: TStringArray;
 begin
   if not IsSaved then
   begin
@@ -346,6 +348,47 @@ begin
     else
     begin
       // New file format
+      w := 0;
+      h := 0;
+      b := '';
+      for i := 0 to fi.Count -1 do
+      begin
+        if AnsiStartsStr('width=',fi[i]) then
+        begin
+          data := fi[i].Split('=');
+          if High(data) = 1 then w := data[1].ToInteger;
+        end;
+        if AnsiStartsStr('height=',fi[i]) then
+        begin
+          data := fi[i].Split('=');
+          if High(data) = 1 then h := data[1].ToInteger;
+        end;
+        if AnsiStartsStr('data=',fi[i]) then
+        begin
+          data := fi[i].Split('=');
+          if High(data) = 1 then b := data[1];
+        end;
+      end;
+      if (w > 0) and (h > 0) and (Length(b) > 1) then
+      begin
+        SpriteWidth := w;
+        SpriteHeight := h;
+        if (w = 8) and (h = 8) then listSpriteSize.ItemIndex := 0;
+        if (w = 8) and (h = 16) then listSpriteSize.ItemIndex := 1;
+        if (w = 16) and (h = 8) then listSpriteSize.ItemIndex := 2;
+        if (w = 16) and (h = 16) then listSpriteSize.ItemIndex := 3;
+        listSpriteSizeChange(Sender);
+        data := b.Split(',');
+        c := 0;
+        for i := 0 to SpriteWidth-1 do
+        begin
+          for j := 0 to SpriteHeight-1 do
+          begin
+            pixels[i,j] := data[c].ToInteger;
+            inc(c);
+          end;
+        end;
+      end;
     end;
     fi.Free;
     UpdateViewArea;
@@ -368,6 +411,9 @@ end;
 procedure TfrmMain.btnSaveClick(Sender: TObject);
 var
   outfile: String;
+  fo: TStrings;
+  data: String;
+  x,y: Integer;
 begin
   if (CurrentFile = '') or (CurrentFile = 'Untitled') then
   begin
@@ -379,8 +425,23 @@ begin
   end
   else outfile := CurrentFile;
   if not outfile.EndsWith('.udgp') then outfile := outfile + '.udgp';
-  textOutput.Lines.SaveToFile(outfile);
+  data := '';
+  for x := 0 to SpriteWidth-1 do
+  begin
+    for y := 0 to SpriteHeight-1 do
+    begin
+      data := data + pixels[x,y].ToString + ',';
+    end;
+  end;
+  data := Copy(data,1,Length(data)-1);
+  fo := TStringList.Create;
+  fo.Add('#APPVER '+APPVER);
+  fo.Add('width='+SpriteWidth.ToString);
+  fo.Add('height='+SpriteHeight.ToString);
+  fo.Add('data='+data);
+  fo.SaveToFile(outfile);
   IsSaved := true;
+  fo.Free;
   if outfile <> CurrentFile then CurrentFile := outfile;
   UpdateWindowTitle;
 end;
@@ -576,7 +637,7 @@ begin
   SetLength(tmp, SpriteWidth, SpriteHeight);
   wx := SpriteWidth-1;
   wy := SpriteHeight-1;
-  for x := 0 to {3} (SpriteWidth div 2)-1 do
+  for x := 0 to (SpriteWidth div 2)-1 do
   begin
     for y := 0 to wx-x do
     begin
