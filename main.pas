@@ -834,6 +834,15 @@ begin
   textOutput.Lines.Add('');
   textOutput.Lines.AddStrings(plines);
   textOutput.Lines.Add('');}
+  for i := 0 to SpriteHeight-1 do
+  begin
+    s := '';
+    for j := 0 to SpriteWidth-1 do
+    begin
+      s := s + IntToStr(pixels[j,i]);
+    end;
+    textOutput.Lines.Add(s);
+  end;
   s := 'DATA ';
   if SpriteWidth = 8 then
   begin
