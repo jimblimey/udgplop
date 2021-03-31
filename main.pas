@@ -839,6 +839,7 @@ begin
     s := '';
     for j := 0 to SpriteWidth-1 do
     begin
+      if j = 8 then s := s + ' ';
       s := s + IntToStr(pixels[j,i]);
     end;
     textOutput.Lines.Add(s);

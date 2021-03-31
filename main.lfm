@@ -198,21 +198,21 @@ object frmMain: TfrmMain
     Visible = False
   end
   object OpenDialog1: TOpenDialog
-    Left = 255
-    Top = 117
+    left = 255
+    top = 117
   end
   object SaveDialog1: TSaveDialog
-    Left = 270
-    Top = 194
+    left = 270
+    top = 194
   end
   object updateTimer: TTimer
     OnTimer = updateTimerTimer
-    Left = 253
-    Top = 280
+    left = 253
+    top = 280
   end
   object menuTransform: TPopupMenu
-    Left = 91
-    Top = 121
+    left = 91
+    top = 121
     object menuInvert: TMenuItem
       Caption = 'Invert'
       OnClick = menuInvertClick
@@ -235,8 +235,8 @@ object frmMain: TfrmMain
     end
   end
   object menuEdit: TPopupMenu
-    Left = 355
-    Top = 269
+    left = 355
+    top = 269
     object menuMoveRowUp: TMenuItem
       Caption = 'Move row up'
       Visible = False
