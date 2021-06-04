@@ -114,7 +114,7 @@ implementation
 
 {$R *.lfm}
 
-uses about;
+uses about, import;
 
 // http://delphiexamples.com/mathematics/bin2dec.html
 function Pow(i, k: Integer): Integer;
@@ -260,7 +260,7 @@ begin
     i := messagedlg('This file is unsaved,'+#13#10+'would you like to save it?', mtWarning, mbYesNo, 0);
     if i = mrYes then btnSaveClick(Sender);
   end;
-  s := InputBox('Import a sprite','Enter the pixels as 8 integer values seperated by commas','0,0,0,0,0,0,0,0');
+  {s := InputBox('Import a sprite','Enter the pixels as 8 integer values seperated by commas','0,0,0,0,0,0,0,0');
   sparts := s.Split(',');
   if High(sparts) = 7 then
   begin
@@ -278,7 +278,11 @@ begin
     IsSaved := false;
     UpdateWindowTitle;
   end
-  else showmessage('Import failed! Is the data in correct format?');
+  else showmessage('Import failed! Is the data in correct format?');  }
+  if frmImport.ShowModal = mrOK then
+  begin
+
+  end;
 end;
 
 procedure TfrmMain.btnInkClick(Sender: TObject);
@@ -810,20 +814,6 @@ var
 begin
   textOutput.Lines.Clear;
   plines := TStringList.Create;
-{  for i := 0 to 7 do
-  begin
-    s := '';
-    for j := 0 to 7 do
-    begin
-      s := s + IntToStr(pixels[i,j]);
-    end;
-    plines.Add('POKE USR "A"+'+IntToStr(i)+', BIN ' + s);
-    s := s + ' ' + IntToStr(GetLineValue(j));
-    textOutput.Lines.Add(s);
-  end;
-  textOutput.Lines.Add('');
-  textOutput.Lines.AddStrings(plines);
-  textOutput.Lines.Add('');}
   for i := 0 to SpriteHeight-1 do
   begin
     s := '';
