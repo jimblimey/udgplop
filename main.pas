@@ -160,16 +160,6 @@ begin
 end;
 {$ENDIF}
 
-function HexToTColor(sColor: string): TColor;
-var
-  r,g,b: Byte;
-begin
-  r := StrToInt( '$00'+Copy( sColor, 1, 2 ) );
-  g := StrToInt( '$00'+Copy( sColor, 3, 2 ) );
-  b := StrToInt( '$00'+Copy( sColor, 5, 2 ) );
-  Result := RGBToColor(r,g,b);
-end;
-
 function ColourContrast(incol: TColor): TColor;
 const
   gamma = 2.2;
@@ -190,21 +180,21 @@ procedure TfrmMain.FormCreate(Sender: TObject);
 var
   c: Integer;
 begin
-  ZXColours[0] := HexToTColor('000000');
-  ZXColours[1] := HexToTColor('0000C0');
-  ZXColours[2] := HexToTColor('C00000');
-  ZXColours[3] := HexToTColor('C000C0');
-  ZXColours[4] := HexToTColor('00C000');
-  ZXColours[5] := HexToTColor('00C0C0');
-  ZXColours[6] := HexToTColor('C0C000');
-  ZXColours[7] := HexToTColor('C0C0C0');
-  ZXColours[8] := HexToTColor('0000FF');
-  ZXColours[9] := HexToTColor('FF0000');
-  ZXColours[10] := HexToTColor('FF00FF');
-  ZXColours[11] := HexToTColor('00FF00');
-  ZXColours[12] := HexToTColor('00FFFF');
-  ZXColours[13] := HexToTColor('FFFF00');
-  ZXColours[14] := HexToTColor('FFFFFF');
+  ZXColours[0] := RGB(0,0,0);
+  ZXColours[1] := RGB(0,0,192);
+  ZXColours[2] := RGB(192,0,0);
+  ZXColours[3] := RGB(192,0,192);
+  ZXColours[4] := RGB(0,192,0);
+  ZXColours[5] := RGB(0,192,192);
+  ZXColours[6] := RGB(192,192,0);
+  ZXColours[7] := RGB(192,192,192);
+  ZXColours[8] := RGB(0,0,255);
+  ZXColours[9] := RGB(255,0,0);
+  ZXColours[10] := RGB(255,0,255);
+  ZXColours[11] := RGB(0,255,0);
+  ZXColours[12] := RGB(0,255,255);
+  ZXColours[13] := RGB(255,255,0);
+  ZXColours[14] := RGB(255,255,255);
 
   PaperSelect := false;
   InkSelect := false;
