@@ -40,6 +40,7 @@ var
   s: String;
   sa: TStringArray;
   cont: Boolean;
+  i: Integer;
 begin
   cont := true;
   s := textBytes.Text;
@@ -48,6 +49,10 @@ begin
   if (listSize.ItemIndex = 1) and (High(sa) <> 15) then cont := false;
   if (listSize.ItemIndex = 2) and (High(sa) <> 15) then cont := false;
   if (listSize.ItemIndex = 3) and (High(sa) <> 31) then cont := false;
+  for i := 0 to High(sa) do
+  begin
+    if (sa[i].ToInteger < 0) and (sa[i].ToInteger > 255) then cont := false;
+  end;
   if not cont then
   begin
     messagedlg('The bytes entered do not appear to be a valid sprite', mtError, [mbOK], 0);
