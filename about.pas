@@ -44,22 +44,22 @@ implementation
 
 procedure TfrmAbout.Image1Click(Sender: TObject);
 begin
-  OpenURL('http://www.lazarus.freepascal.org');
+  OpenURL('https://www.lazarus-ide.org');
 end;
 
 procedure TfrmAbout.Image2Click(Sender: TObject);
 begin
-  OpenURL('https://twitter.com/hippy2094');
+  OpenURL('https://twitter.com/jimblimey');
 end;
 
 procedure TfrmAbout.imgSFClick(Sender: TObject);
 begin
-  OpenURL('https://sourceforge.net/p/udgplop/');
+  OpenURL('https://ko-fi.com/jimblimey');
 end;
 
 procedure TfrmAbout.Label5Click(Sender: TObject);
 begin
-  OpenURL('https://www.matthewhipkin.co.uk');
+  OpenURL('https://www.jimblimey.com');
 end;
 
 procedure TfrmAbout.btnOKClick(Sender: TObject);

@@ -730,7 +730,7 @@ end;
 
 procedure TfrmMain.updateLabelClick(Sender: TObject);
 begin
-  OpenURL('https://www.matthewhipkin.co.uk');
+  OpenURL('https://jimblimey.itch.io/udgplop');
   updatePanel.Visible := false;
 end;
 

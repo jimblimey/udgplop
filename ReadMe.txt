@@ -1,14 +1,14 @@
 UDG Plop - a ZX Spectrum UDG generator
-(c)2019 Matthew Hipkin <https://www.matthewhipkin.co.uk>
+(c)2019 Jim Blimey <https://www.jimblimey.com>
 
-Usage is simple: fill in the "pixels" you want and then copy the POKEs or DATA 
+Usage is simple: fill in the "pixels" you want and then copy the POKEs or DATA
 from the right-hand panel.
 
-UDG Plop is built with Lazarus/FreePascal and can run on Windows, FreeBSD, Linux 
+UDG Plop is built with Lazarus/FreePascal and can run on Windows, FreeBSD, Linux
 and Mac OSX.
 
-Please report bugs or feature requests on the sourceforge project page at
-https://sourceforge.net/p/udgplop or find me on twitter @hippy2094
+Please report bugs or feature requests on the github project page at
+https://github.com/jimblimey/udgplop or find me on twitter @jimblimey
 
 Changelog
 ---------
