@@ -140,33 +140,6 @@ object frmMain: TfrmMain
       ParentFont = False
       TabOrder = 0
     end
-    object updatePanel: TPanel
-      Left = 15
-      Height = 35
-      Top = 452
-      Width = 281
-      Anchors = [akRight, akBottom]
-      ClientHeight = 35
-      ClientWidth = 281
-      TabOrder = 1
-      Visible = False
-      object updateLabel: TLabel
-        Cursor = crHandPoint
-        Left = 1
-        Height = 33
-        Top = 1
-        Width = 279
-        Align = alClient
-        Alignment = taCenter
-        Caption = 'An update is a available, click here to download'
-        Font.Color = clRed
-        Font.Style = [fsUnderline]
-        Layout = tlCenter
-        ParentColor = False
-        ParentFont = False
-        OnClick = updateLabelClick
-      end
-    end
     object imgPreview: TImage
       Left = 8
       Height = 16
@@ -182,7 +155,7 @@ object frmMain: TfrmMain
       Align = alTop
       Caption = 'Rows first'
       OnChange = checkRowFirstChange
-      TabOrder = 2
+      TabOrder = 1
       Visible = False
     end
   end
@@ -204,11 +177,6 @@ object frmMain: TfrmMain
   object SaveDialog1: TSaveDialog
     Left = 270
     Top = 194
-  end
-  object updateTimer: TTimer
-    OnTimer = updateTimerTimer
-    Left = 253
-    Top = 280
   end
   object menuTransform: TPopupMenu
     Left = 91

@@ -6,8 +6,7 @@ interface
 
 uses
   {$IFDEF WINDOWS}Windows, {$ENDIF}Classes, SysUtils, Forms, Controls, Graphics,
-  Dialogs, ExtCtrls, ComCtrls, StdCtrls, LCLIntF, Menus, StrUtils, fphttpclient,
-  LCLType, math;
+  Dialogs, ExtCtrls, ComCtrls, StdCtrls, LCLIntF, Menus, StrUtils, LCLType, math;
 
 type
 
@@ -41,14 +40,11 @@ type
     menuTransform: TPopupMenu;
     colourPanel: TScrollBox;
     menuEdit: TPopupMenu;
-    updateLabel: TLabel;
     OpenDialog1: TOpenDialog;
-    updatePanel: TPanel;
     SaveDialog1: TSaveDialog;
     textOutput: TMemo;
     buttonPanel: TPanel;
     infoPanel: TPanel;
-    updateTimer: TTimer;
     ToolBar1: TToolBar;
     procedure btnAboutClick(Sender: TObject);
     procedure btnImportClick(Sender: TObject);
@@ -74,8 +70,6 @@ type
     procedure menuShiftLeftClick(Sender: TObject);
     procedure menuShiftRightClick(Sender: TObject);
     procedure menuShiftUpClick(Sender: TObject);
-    procedure updateLabelClick(Sender: TObject);
-    procedure updateTimerTimer(Sender: TObject);
     procedure ColourButtonMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
   private
@@ -148,17 +142,6 @@ begin
   if Error=True then Result:=0
     else Result:=Res;
 end;
-
-{$IFDEF MSWINDOWS}
-function getWinVer: String;
-var
-  VerInfo: TOSVersioninfo;
-begin
-  VerInfo.dwOSVersionInfoSize := SizeOf(TOSVersionInfo);
-  GetVersionEx(VerInfo);
-  Result := 'Windows NT '+IntToStr(VerInfo.dwMajorVersion) + '.' + IntToStr(VerInfo.dwMinorVersion)
-end;
-{$ENDIF}
 
 function ColourContrast(incol: TColor): TColor;
 const
@@ -728,12 +711,6 @@ begin
   IsSaved := false;
 end;
 
-procedure TfrmMain.updateLabelClick(Sender: TObject);
-begin
-  OpenURL('https://jimblimey.itch.io/udgplop');
-  updatePanel.Visible := false;
-end;
-
 procedure TfrmMain.ColourButtonMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
 begin
@@ -755,35 +732,6 @@ begin
   colourPanel.Visible := false;
   SetButtons;
   UpdateViewArea;
-end;
-
-procedure TfrmMain.updateTimerTimer(Sender: TObject);
-var
-  HTTP: TFPHttpClient;
-  OS: String;
-  response: String;
-begin
-  updateTimer.Enabled := false;
-  {$ifdef Windows}
-  OS := getWinVer;
-  {$endif}
-  {$ifdef Linux}
-  OS := 'Linux';
-  {$endif}
-  {$ifdef FreeBSD}
-  OS := 'FreeBSD';
-  {$endif}
-  {$ifdef Darwin}
-  OS := 'OS X';
-  {$endif}
-  HTTP := TFPHttpClient.Create(nil);
-  HTTP.RequestHeaders.Add('User-Agent: Mozilla/5.0 (compatible; '+OS+'; '+APPNAME+' '+APPVER+' ('+IntToStr(CURRVER)+'))');
-  response := HTTP.Get('http://www.matthewhipkin.co.uk/udgplop.txt');
-  if StrToIntDef(trim(response),-1) > CURRVER then
-  begin
-    updatePanel.Visible := true;
-  end;
-  HTTP.Free;
 end;
 
 procedure TfrmMain.GetButtonPosition(const button: TShape; var x: Integer; var y: Integer);
