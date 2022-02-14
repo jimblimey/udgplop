@@ -235,7 +235,6 @@ end;
 procedure TfrmMain.btnImportClick(Sender: TObject);
 var
   s,b: String;
-  sparts: TStringArray;
   i,j: Integer;
 begin
   if not IsSaved then
@@ -243,28 +242,19 @@ begin
     i := messagedlg('This file is unsaved,'+#13#10+'would you like to save it?', mtWarning, mbYesNo, 0);
     if i = mrYes then btnSaveClick(Sender);
   end;
-  {s := InputBox('Import a sprite','Enter the pixels as 8 integer values seperated by commas','0,0,0,0,0,0,0,0');
-  sparts := s.Split(',');
-  if High(sparts) = 7 then
-  begin
-    for i := 0 to 7 do
-    begin
-      b := IntToBin(StrToIntDef(sparts[i],0),8);
-      for j := 1 to 8 do
-      begin
-        pixels[i,j-1] := StrToInt(b[j]);
-      end;
-    end;
-    UpdateViewArea;
-    SetButtons;
-    CurrentFile := 'Untitled';
-    IsSaved := false;
-    UpdateWindowTitle;
-  end
-  else showmessage('Import failed! Is the data in correct format?');  }
   if frmImport.ShowModal = mrOK then
   begin
+    checkRowFirst.Checked := frmImport.checkRowsFirst.Checked;
+    listSpriteSize.ItemIndex := frmImport.listSize.ItemIndex;
+    SetSpriteSize;
+    for i := 0 to SpriteWidth-1 do
+    begin
+      for j := SpriteHeight-1 do
+      begin
 
+      end;
+    end;
+    listSpriteSizeChange(nil);
   end;
 end;
 
