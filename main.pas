@@ -143,6 +143,24 @@ begin
     else Result:=Res;
 end;
 
+function DecToBin(Value: Byte): string;
+var
+  i: Integer;
+begin
+  SetLength(Result, 8);
+  for i := 1 to 8 do
+  begin
+    if (Value shr (8-i)) and 1 = 0 then
+    begin
+      Result[i] := '0'
+    end
+    else
+    begin
+      Result[i] := '1';
+    end;
+  end;
+end;
+
 function ColourContrast(incol: TColor): TColor;
 const
   gamma = 2.2;
@@ -235,7 +253,7 @@ end;
 procedure TfrmMain.btnImportClick(Sender: TObject);
 var
   s,b: String;
-  i,j: Integer;
+  i,j,c: Integer;
 begin
   if not IsSaved then
   begin
@@ -246,15 +264,33 @@ begin
   begin
     checkRowFirst.Checked := frmImport.checkRowsFirst.Checked;
     listSpriteSize.ItemIndex := frmImport.listSize.ItemIndex;
-    SetSpriteSize;
-    for i := 0 to SpriteWidth-1 do
+    listSpriteSizeChange(nil);
+    if SpriteWidth = 8 then
     begin
-      for j := SpriteHeight-1 do
+      c := 0;
+      for i := 0 to SpriteHeight-1 do
+      begin
+        b := DecToBin(frmImport.ImportItems[c].ToInteger);
+        for j := 0 to 7 do
+        begin
+          pixels[j,i] := StrToInt(b[j+1]);
+        end;
+        inc(c);
+      end;
+    end
+    else
+    begin
+      if checkRowFirst.Checked then
+      begin
+
+      end
+      else
       begin
 
       end;
     end;
-    listSpriteSizeChange(nil);
+    UpdateViewArea;
+    SetButtons;
   end;
 end;
 
