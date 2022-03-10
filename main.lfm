@@ -9,17 +9,19 @@ object frmMain: TfrmMain
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '2.0.12.0'
+  LCLVersion = '2.1.0.0'
   object ToolBar1: TToolBar
     Left = 0
-    Height = 26
+    Height = 36
     Top = 0
     Width = 785
+    ButtonHeight = 32
+    ButtonWidth = 23
     Caption = 'ToolBar1'
     TabOrder = 0
     object btnNew: TButton
       Left = 1
-      Height = 22
+      Height = 32
       Top = 2
       Width = 75
       Caption = 'New'
@@ -28,7 +30,7 @@ object frmMain: TfrmMain
     end
     object btnOpen: TButton
       Left = 76
-      Height = 22
+      Height = 32
       Top = 2
       Width = 75
       Caption = 'Open'
@@ -37,7 +39,7 @@ object frmMain: TfrmMain
     end
     object btnSave: TButton
       Left = 151
-      Height = 22
+      Height = 32
       Top = 2
       Width = 75
       Caption = 'Save'
@@ -46,7 +48,7 @@ object frmMain: TfrmMain
     end
     object btnAbout: TButton
       Left = 626
-      Height = 22
+      Height = 32
       Top = 2
       Width = 75
       Caption = 'About'
@@ -55,7 +57,7 @@ object frmMain: TfrmMain
     end
     object btnImport: TButton
       Left = 226
-      Height = 22
+      Height = 32
       Top = 2
       Width = 75
       Caption = 'Import'
@@ -64,7 +66,7 @@ object frmMain: TfrmMain
     end
     object btnTransform: TButton
       Left = 301
-      Height = 22
+      Height = 32
       Top = 2
       Width = 75
       Caption = 'Transform...'
@@ -73,7 +75,7 @@ object frmMain: TfrmMain
     end
     object btnPaper: TButton
       Left = 376
-      Height = 22
+      Height = 32
       Top = 2
       Width = 75
       Caption = 'Paper'
@@ -82,7 +84,7 @@ object frmMain: TfrmMain
     end
     object btnInk: TButton
       Left = 451
-      Height = 22
+      Height = 32
       Top = 2
       Width = 75
       Caption = 'Ink'
@@ -91,10 +93,10 @@ object frmMain: TfrmMain
     end
     object listSpriteSize: TComboBox
       Left = 526
-      Height = 23
+      Height = 32
       Top = 2
       Width = 100
-      ItemHeight = 15
+      ItemHeight = 24
       ItemIndex = 0
       Items.Strings = (
         '8x8'
@@ -110,8 +112,8 @@ object frmMain: TfrmMain
   end
   object buttonPanel: TPanel
     Left = 0
-    Height = 491
-    Top = 26
+    Height = 481
+    Top = 36
     Width = 488
     Align = alClient
     TabOrder = 1
@@ -119,17 +121,17 @@ object frmMain: TfrmMain
   end
   object infoPanel: TPanel
     Left = 488
-    Height = 491
-    Top = 26
+    Height = 481
+    Top = 36
     Width = 297
     Align = alRight
-    ClientHeight = 491
+    ClientHeight = 481
     ClientWidth = 297
     TabOrder = 2
     object textOutput: TMemo
       Left = 1
       Height = 367
-      Top = 20
+      Top = 23
       Width = 295
       Align = alTop
       Font.CharSet = ANSI_CHARSET
@@ -149,7 +151,7 @@ object frmMain: TfrmMain
     end
     object checkRowFirst: TCheckBox
       Left = 1
-      Height = 19
+      Height = 22
       Top = 1
       Width = 295
       Align = alTop
