@@ -93,10 +93,10 @@ object frmMain: TfrmMain
     end
     object listSpriteSize: TComboBox
       Left = 526
-      Height = 32
+      Height = 31
       Top = 2
       Width = 100
-      ItemHeight = 24
+      ItemHeight = 25
       ItemIndex = 0
       Items.Strings = (
         '8x8'
@@ -105,7 +105,7 @@ object frmMain: TfrmMain
         '16x16'
       )
       OnChange = listSpriteSizeChange
-      Style = csDropDownList
+      Style = csOwnerDrawFixed
       TabOrder = 8
       Text = '8x8'
     end
@@ -131,7 +131,7 @@ object frmMain: TfrmMain
     object textOutput: TMemo
       Left = 1
       Height = 367
-      Top = 23
+      Top = 20
       Width = 295
       Align = alTop
       Font.CharSet = ANSI_CHARSET
@@ -151,7 +151,7 @@ object frmMain: TfrmMain
     end
     object checkRowFirst: TCheckBox
       Left = 1
-      Height = 22
+      Height = 19
       Top = 1
       Width = 295
       Align = alTop
