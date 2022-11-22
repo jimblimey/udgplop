@@ -252,8 +252,8 @@ end;
 
 procedure TfrmMain.btnImportClick(Sender: TObject);
 var
-  s,b: String;
-  i,j,c: Integer;
+  b: String;
+  i,j,c,x,y,xs: Integer;
 begin
   if not IsSaved then
   begin
@@ -264,7 +264,7 @@ begin
   begin
     checkRowFirst.Checked := frmImport.checkRowsFirst.Checked;
     listSpriteSize.ItemIndex := frmImport.listSize.ItemIndex;
-    listSpriteSizeChange(nil);
+    listSpriteSizeChange(Sender);
     if SpriteWidth = 8 then
     begin
       c := 0;
@@ -282,11 +282,35 @@ begin
     begin
       if checkRowFirst.Checked then
       begin
-
+        y := 0;
+        xs := 0;
+        for c := 0 to High(frmImport.ImportItems) do
+        begin
+          b := DecToBin(frmImport.ImportItems[c].ToInteger);
+          for x := 1 to 8 do
+          begin
+            pixels[xs+x-1,y] := StrToInt(trim(b[x]));
+          end;
+          inc(y);
+          if y > High(pixels[0]) then
+          begin
+            inc(xs,8);
+            y := 0;
+          end;
+        end;
       end
       else
       begin
+        xs := 0;
+        x := 0;
+        for c := 0 to High(frmImport.ImportItems) do
+        begin
+          b := DecToBin(frmImport.ImportItems[c].ToInteger);
+          for y := 1 to 8 do
+          begin
 
+          end;
+        end;
       end;
     end;
     UpdateViewArea;
